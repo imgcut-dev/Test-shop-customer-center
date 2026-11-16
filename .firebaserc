@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "test-shop-customer-center"
+  },
+  "targets": {
+    "test-shop-customer-center": {
+      "hosting": {
+        "app": [
+          "test-shop-customer-center"
+        ],
+        "qa": [
+          "kkomarket-qa-report"
+        ]
+      }
+    }
   }
 }

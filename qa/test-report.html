@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>꼬순내 마켓 QA 테스트 TC·보고서</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--fg:#1b2430;--mute:#677384;--line:#dde2e9;--acc:#e8751a;--pass:#1a8a52;--fail:#c8372d;--skip:#8a6d0b;--passbg:#e5f5ec;--failbg:#fbe9e7;--skipbg:#fbf3d9;--head:#eef1f5}
+@media (prefers-color-scheme:dark){:root{--bg:#14171c;--panel:#1c2027;--fg:#e8ecf1;--mute:#98a3b3;--line:#2d343f;--acc:#ff9a45;--pass:#4cc88a;--fail:#ff7d72;--skip:#e0b94a;--passbg:#173326;--failbg:#3b1d1a;--skipbg:#3a3114;--head:#232830}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif}
+header{padding:20px 24px 0;max-width:1400px;margin:0 auto}
+h1{margin:0 0 4px;font-size:22px}
+.meta{color:var(--mute);font-size:13px}
+nav{display:flex;gap:4px;max-width:1400px;margin:16px auto 0;padding:0 24px;border-bottom:1px solid var(--line)}
+nav button{font:inherit;font-weight:600;background:none;color:var(--mute);border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer}
+nav button[aria-selected=true]{color:var(--acc);border-bottom-color:var(--acc)}
+nav button:focus-visible,select:focus-visible,input:focus-visible,.btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{max-width:1400px;margin:0 auto;padding:20px 24px 60px}
+section[hidden]{display:none}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+select,input[type=search]{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg)}
+input[type=search]{min-width:220px}
+.btn{font:inherit;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+.cnt{margin-left:auto;color:var(--mute);font-size:13px}
+.wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);max-height:72vh}
+table{border-collapse:collapse;width:100%;min-width:1100px}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th:last-child,td:last-child{border-right:0}
+thead th{position:sticky;top:0;background:var(--head);font-size:12px;white-space:nowrap;z-index:1}
+tbody tr:hover{background:var(--head)}
+td.id{white-space:nowrap;font-weight:600}
+.badge{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.Pass{background:var(--passbg);color:var(--pass)}.Fail{background:var(--failbg);color:var(--fail)}.미실행{background:var(--skipbg);color:var(--skip)}
+.sev{font-size:12px;font-weight:700}.sev.High,.sev.Medium{color:var(--fail)}.sev.Low{color:var(--skip)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card small{color:var(--mute);display:block}.card b{font-size:28px;line-height:1.2}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px;margin-bottom:20px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.box h2,.box h3{margin:0 0 10px;font-size:15px}
+.bar{display:grid;grid-template-columns:110px 1fr 120px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+.track{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--head)}
+.track i{display:block;height:100%}
+.legend{display:flex;gap:14px;color:var(--mute);font-size:12px;margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--c)}
+ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
+.defect{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--skip);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.defect.Medium,.defect.High{border-left-color:var(--fail)}
+.defect h3{margin:0 0 6px;font-size:15px}
+.defect dl{display:grid;grid-template-columns:90px 1fr;gap:4px 12px;margin:8px 0 0}
+.defect dt{color:var(--mute);font-size:12px}.defect dd{margin:0}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.shots figure{margin:0}.shots img{width:100%;border:1px solid var(--line);border-radius:10px}.shots figcaption{font-size:12px;color:var(--mute);margin-top:4px}
+@media (max-width:640px){header,main,nav{padding-left:14px;padding-right:14px}.bar{grid-template-columns:80px 1fr 90px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>꼬순내 마켓 · 고객 화면 / 관리자 화면 테스트</h1>
+  <div class="meta" id="meta"></div>
+</header>
+<nav role="tablist" aria-label="보고서 탭">
+  <button role="tab" aria-selected="true" data-t="tc">테스트 케이스 (TC)</button>
+  <button role="tab" aria-selected="false" data-t="rep">결과 보고서</button>
+  <button role="tab" aria-selected="false" data-t="def">결함 목록</button>
+</nav>
+<main>
+<section id="tc">
+  <div class="tools">
+    <select id="fArea" aria-label="영역"><option value="">영역 전체</option><option>고객</option><option>관리자</option></select>
+    <select id="fType" aria-label="구분"><option value="">구분 전체</option><option>기능</option><option>UI/UX</option><option>보안</option></select>
+    <select id="fStat" aria-label="결과"><option value="">결과 전체</option><option>Pass</option><option>Fail</option><option>미실행</option></select>
+    <input type="search" id="fQ" placeholder="TC ID·시나리오 검색" aria-label="검색">
+    <button class="btn" id="csv" type="button">CSV 내보내기 (엑셀)</button>
+    <span class="cnt" id="cnt"></span>
+  </div>
+  <div class="wrap"><table>
+    <thead><tr><th>TC ID</th><th>영역</th><th>구분</th><th>시나리오</th><th>테스트 절차</th><th>기대 결과</th><th>실제 결과</th><th>결과</th><th>심각도</th><th>결함</th></tr></thead>
+    <tbody id="tb"></tbody>
+  </table></div>
+</section>
+
+<section id="rep" hidden>
+  <div class="cards" id="cards"></div>
+  <div class="grid2">
+    <div class="box"><h2>영역 × 구분별 결과</h2><div id="bars"></div>
+      <div class="legend"><span style="--c:var(--pass)">Pass</span><span style="--c:var(--fail)">Fail</span><span style="--c:var(--skip)">미실행</span></div></div>
+    <div class="box"><h2>총평</h2><ul class="l" id="sum"></ul></div>
+  </div>
+  <div class="grid2">
+    <div class="box"><h2>테스트 범위·환경</h2><ul class="l">
+      <li>대상: 고객 화면(<code>#chat</code>), 관리자 화면(<code>#admin</code>)</li>
+      <li>환경: 로컬 서버 <code>localhost:3000</code> + 실제 Firebase(Firestore, Authentication)</li>
+      <li>브라우저: Chrome(관리자, 사용자 Google 로그인), 앱 내장 브라우저(고객), 화면폭 PC 1440 · 모바일 375</li>
+      <li>방법: 화면 조작과 스크립트로 입력·응답·저장값(Firestore)을 직접 비교</li>
+      <li>데이터: 가상 샘플(상품·재고·주문·배송 각 10건, FAQ 8건). 수정한 값은 모두 원복</li>
+      <li>제외: AI 연결 테스트 버튼·키 저장·샘플 되돌리기·다른 Google 계정·주문/배송 편집 반영 (TC 결과 '미실행')</li>
+    </ul></div>
+    <div class="box"><h2>테스트 중 확인한 점</h2><ul class="l">
+      <li>규칙 답변(FAQ·재고·주문조회·추천)은 평균 0초대로 즉시 응답, AI 응답은 약 1~2초(5건 평균 1.8초)</li>
+      <li>관리자 수정은 새로고침 없이 고객 화면에 실시간 반영</li>
+      <li>대시보드 KPI(주문 수·매출·배송중·품절/소량·즉시응답률·AI 평균)는 Firestore 원본 값과 일치</li>
+      <li>비로그인 상태에서 데이터 수정·상담 목록 조회는 차단, 단 주문 데이터 읽기는 열려 있음(결함 D-01)</li>
+      <li>테스트용 상담 기록이 Firestore에 남아 있음(관리자 상담 내역에 표시)</li>
+    </ul></div>
+  </div>
+  <div class="box"><h2>화면 캡처</h2><div class="shots">
+    <figure><img src="screens/customer-pc.png" alt="고객 화면 PC"><figcaption>고객 화면 · PC 1440</figcaption></figure>
+    <figure><img src="screens/customer-mobile.png" alt="고객 화면 모바일"><figcaption>고객 화면 · 모바일 375 ("처음으로" 줄바꿈, 입력창 안내문 잘림 · D-03, D-04)</figcaption></figure>
+    <figure><img src="screens/admin-chats.png" alt="관리자 상담 내역"><figcaption>관리자 · 상담 내역 (긴 질문 전체 표시 · D-08)</figcaption></figure>
+  </div></div>
+</section>
+
+<section id="def" hidden></section>
+</main>
+
+<script>
+const META={date:'2026-11-16',target:'꼬순내 마켓 (test-shop-customer-center)',tester:'Claude (자동·수동 혼합)'};
+/* [id, 영역, 구분, 시나리오, 절차, 기대, 실제, 결과, 심각도, 결함] */
+const TC=[
+['CF-01','고객','기능','배송비 FAQ','"배송비 얼마예요?" 입력','FAQ 답변(3,000원, 3만원 이상 무료)을 즉시 표시','배송비 3,000원, 30,000원 이상 무료 안내 (즉시)','Pass','',''],
+['CF-02','고객','기능','배송 소요 예상일','"배송은 얼마나 걸려요?" 입력','오늘 기준 출고·도착 예상일 안내','11/16(월) 출고, 11/17(화)~11/18(수) 도착 예정으로 안내 (14시 기준, 주말 제외 계산 정확)','Pass','',''],
+['CF-03','고객','기능','교환/환불 FAQ','"교환 환불 방법 알려줘" 입력','교환·환불 FAQ 안내','7일 이내 신청, 단순 변심 배송비 안내','Pass','',''],
+['CF-04','고객','기능','주문 취소 FAQ','"주문 취소하고 싶어요" 입력','취소 가능 단계 안내','상품준비중까지 취소 가능, 배송중은 반품 안내','Pass','',''],
+['CF-05','고객','기능','운영시간·쿠폰·적립금 FAQ','운영시간 / 쿠폰 안 돼요 / 적립금 질문 3건','각 FAQ 답변 표시','3건 모두 해당 FAQ 답변 표시','Pass','',''],
+['CF-06','고객','기능','상품 재고 문의(소량)','"헬씨트릿 글루코사민 아직 살 수 있나요?"','가격·할인율·재고(소량 남음) 카드','945원(73%), 재고 3개 소량 남음 표시','Pass','',''],
+['CF-07','고객','기능','품절 상품·입고 예정','눈·눈물 케어 트릿 / 북어 트릿 재고 문의','품절 + 입고 예정일 표시','품절 · 입고예정 2026-12-05 / 12-10 표시','Pass','',''],
+['CF-08','고객','기능','주문 조회 정상 흐름','"주문/배송 조회" → ORD-1001 → 1234','번호 → 본인확인 → 주문·배송 정보','주문·배송·운송장·현재위치·도착예정 표시','Pass','',''],
+['CF-09','고객','기능','주문번호+뒷4자리 한 번에','"ORD-1003 9012" / "내 주문 ORD-1007 1357" 입력','한 번에 조회, 취소 주문은 취소 상태 표시','정상 조회, 취소 주문 상태·위치 정확','Pass','',''],
+['CF-10','고객','기능','없는 주문번호','"ORD-9999" 입력','주문 없음 안내','"주문을 못 찾았어요" 안내','Pass','',''],
+['CF-11','고객','기능','뒷4자리 오입력 제한','ORD-1004 후 틀린 번호 반복','틀리면 재입력 안내, 반복 시 보안상 초기화','2회까지 재입력 안내, 3회째 처음부터 다시 안내','Pass','Low','D-10'],
+['CF-12','고객','기능','할인·유통기한·카테고리 추천','"제일 할인 많이 하는 상품" / "유통기한 임박" / "사료 중 제일 저렴한 건?" / "3만원 이하 간식"','조건에 맞게 정렬·필터, 품절 제외','가격 오름차순 3~4건, 품절 상품 제외, 올바름','Pass','',''],
+['CF-13','고객','기능','AI 답변(규칙 밖 질문)','"영양제 추천해줘" / "품절인 상품 알려줘"','재고 데이터를 근거로 한 AI 답변','재고·가격·입고예정을 반영한 답변, 1.1~2.0초','Pass','',''],
+['CF-14','고객','기능','스크립트·HTML 입력','<img onerror=…> 입력','실행되지 않고 문자로 표시','스크립트 미실행, 이해 못함 안내','Pass','',''],
+['CF-15','고객','기능','공백·긴 입력','공백만 전송 / 3,000자 전송','공백은 무시, 긴 입력은 오류 없이 안내','공백 미전송, 3,000자는 안내 문구로 응답, 가로 넘침 없음','Pass','',''],
+['CF-16','고객','기능','상담 기록 저장·마스킹','질문 후 Firestore chats 확인','질문·답변 저장, 전화번호 마스킹','저장됨, 뒷4자리는 ****로 저장','Pass','',''],
+['CF-17','고객','기능','상품 타일·카테고리','타일 클릭 / 카테고리 4종 클릭','타일은 재고 질문 전송, 카테고리별 개수 일치','10 / 사료 3 / 간식 5 / 영양제 2, 타일 클릭 시 재고 답변','Pass','',''],
+['CF-18','고객','기능','처음으로','대화 후 "처음으로" 클릭','대화 초기화, 환영 문구·추천 칩 복원','1개 메시지(환영)로 초기화, 칩 6개 표시','Pass','',''],
+['CF-19','고객','기능','키보드 입력','Enter / Shift+Enter / 한글 조합 중 Enter','Enter 전송, Shift+Enter 줄바꿈, 조합 중 미전송','3가지 모두 기대대로','Pass','',''],
+['CU-01','고객','UI/UX','PC 레이아웃(1440)','화면 열기','상품 그리드와 채팅 2단, 겹침 없음','2단 구성 정상, 칩·말풍선 정상','Pass','',''],
+['CU-02','고객','UI/UX','PC 한 화면 안에 들어오는지','1440×900에서 세로 스크롤 확인','스크롤 없이 한 화면','페이지 높이 932px > 900px (32px 스크롤)','Fail','Low','D-06'],
+['CU-03','고객','UI/UX','모바일 레이아웃(375)','375×812로 열기','가로 넘침 없음, 상품은 가로 스크롤','가로 넘침 없음, 상품 가로 스크롤 정상','Pass','',''],
+['CU-04','고객','UI/UX','모바일 "처음으로" 버튼','375폭에서 헤더 확인','한 줄로 표시','"처음으 / 로" 두 줄로 깨짐','Fail','Low','D-03'],
+['CU-05','고객','UI/UX','입력창 안내 문구','입력창 placeholder 확인','안내 문구 전체 보임','PC·모바일 모두 2줄로 잘려 일부 안 보임','Fail','Low','D-04'],
+['CU-06','고객','UI/UX','접근성 기본','aria-live, lang, 이미지 alt, 입력창 라벨','대화 영역 aria-live, 입력창에 라벨','aria-live=polite, lang=ko 정상 / 입력창 aria-label 없음','Fail','Low','D-05'],
+['CU-07','고객','UI/UX','터치 대상 크기','모바일에서 버튼·링크 높이 확인','높이 32px 이상','32px 미만 요소 없음','Pass','',''],
+['CU-08','고객','UI/UX','입력창 높이 자동 조절','여러 줄 입력, 전송 후','줄 수만큼 늘어나고 전송 후 복귀','88px로 늘어나고 전송 후 42px 복귀','Pass','',''],
+['CS-01','고객','보안','주문 데이터 공개 범위','로그아웃 상태에서 orders 컬렉션 읽기','본인 외 주문 정보는 읽을 수 없음','주문 10건의 이름·전화 뒷4자리까지 모두 읽힘','Fail','Medium','D-01'],
+['AF-01','관리자','기능','비로그인 접근','로그아웃 상태로 #admin','로그인 안내만 표시','로그인 안내 + Google 로그인 버튼만 표시','Pass','',''],
+['AF-02','관리자','기능','Google 로그인','imgcut@gmail.com 로그인 후 #admin','관리자 화면 표시, 로그아웃 버튼 표시','관리자 메뉴 13개 표시, 로그아웃 표시','Pass','',''],
+['AF-03','관리자','기능','로그아웃 후 차단','로그아웃 → #admin, 수정·목록 조회 시도','화면 차단, 쓰기·상담목록 조회 permission-denied','모두 차단됨, 관리자 링크도 숨김','Pass','',''],
+['AF-04','관리자','기능','다른 Google 계정 차단','관리자 외 계정으로 로그인','관리자 권한 없음 안내','계정이 없어 확인하지 못함','미실행','',''],
+['AF-05','관리자','기능','대시보드 수치 정확성','KPI 6개를 Firestore 원본으로 계산해 비교','일치','주문 10/매출 347,077(취소 제외)/배송중 3/품절·소량 2·2/즉시응답 88%/AI 1.8초 모두 일치','Pass','',''],
+['AF-06','관리자','기능','처리 필요 항목','대시보드 "처리가 필요한 항목" 확인','품절·소량·준비중 주문 표시','품절 2, 소량 2, 상품준비중·결제완료 주문 표시','Pass','',''],
+['AF-07','관리자','기능','상품 가격 수정','P001 판매가 61,960→50,000','저장되고 고객 화면 즉시 반영','Firestore 50,000, 고객 타일 50,000원 (새로고침 없음)','Pass','',''],
+['AF-08','관리자','기능','재고 0으로 수정','P002 재고 3→0','품절 배지, 챗봇 품절 안내','타일 "품절" 배지, 챗봇 "품절 · 입고예정" 안내','Pass','',''],
+['AF-09','관리자','기능','행 추가 ID 검증','한글 ID / 중복 ID / 빈 ID / 정상 ID(P011)','잘못된 ID 거부, 정상 ID 추가','3종 거부 메시지 표시, P011 추가되고 고객 타일 11개','Pass','',''],
+['AF-10','관리자','기능','행 삭제(2단계)','삭제 1회 → 3초 대기 → 재클릭 2회','1회는 확인, 3초 후 복귀, 2회 삭제','"한 번 더 누르면 삭제" 표시, 복귀, 삭제 정상','Pass','',''],
+['AF-11','관리자','기능','잘못된 값 입력 검증','판매가에 "abc", "-500", 상품명 빈칸','오류 안내 후 저장 거부','0 / -500 / 빈 이름이 그대로 저장되고 고객에게 노출','Fail','Medium','D-02'],
+['AF-12','관리자','기능','FAQ 답변 수정 반영','F001 답변 수정 후 고객 "배송비 얼마예요?"','수정된 답변으로 응답','수정된 답변으로 즉시 응답 (원복 완료)','Pass','',''],
+['AF-13','관리자','기능','FAQ 사용 여부 저장','F008 사용 Y→N→Y','값이 저장됨','N 저장 확인 후 Y로 원복 (챗봇 동작은 미확인)','Pass','',''],
+['AF-14','관리자','기능','질문 분석 → FAQ 등록','"FAQ로 등록" 클릭','새 FAQ 행 생성, 안내 메시지','F009 생성, 키워드 확인 안내 표시 (삭제 완료)','Pass','',''],
+['AF-15','관리자','기능','챗봇 설정 저장','이름·환영문구·마감시각 14→10 저장','고객 화면에 반영','헤더 이름 즉시 변경, 환영문구는 "처음으로" 후 반영, 마감시각 10시로 계산 (원복 완료)','Pass','',''],
+['AF-16','관리자','기능','상담 내역·질문 분석','상담 내역/질문 분석 탭 확인','시간순 목록, 분류·TOP 집계','43건 시간순 표시, 분류·TOP20 표시','Pass','',''],
+['AF-17','관리자','기능','AI 연결 테스트·키 저장','AI 연결 화면에서 키 저장, 테스트 버튼','성공/실패와 응답시간 표시','화면 요소만 확인, 실행하지 않음','미실행','',''],
+['AF-18','관리자','기능','샘플 데이터로 되돌리기','버튼 2회 클릭','샘플 값으로 복원','실행하지 않음 (수정한 값은 수동 원복)','미실행','',''],
+['AF-19','관리자','기능','주문·배송 편집 반영','주문 상태 수정 후 고객 조회','수정된 상태로 조회','실행하지 않음','미실행','',''],
+['AU-01','관리자','UI/UX','PC 레이아웃','1440폭에서 대시보드·표 확인','좌측 메뉴 + 본문, 가로 넘침 없음','정상 (표·카드 겹침 없음)','Pass','',''],
+['AU-02','관리자','UI/UX','메뉴 구조','1depth 메뉴 구분 확인','상담 관리 / 챗봇 설정 / 상품·주문 데이터','3그룹으로 구분되어 표시','Pass','',''],
+['AU-03','관리자','UI/UX','긴 텍스트 표시','3,000자 질문이 있을 때 상담 내역','줄임 표시','전체 3,000자가 펼쳐져 행 높이 170px','Fail','Low','D-08'],
+['AU-04','관리자','UI/UX','질문 분석 품질','자주 묻는 질문 TOP 확인','의미 있는 질문만 집계','마스킹 값 "****"이 TOP에 포함','Fail','Low','D-07'],
+['AU-05','관리자','UI/UX','안내 문구 최신성','AI·에이전트, 상담 내역 화면 문구','현재 구조(Firebase·API 키)에 맞는 설명','"아티팩트 내장 호출·API 키 없음", "Contributor 공유 고객" 등 이전 문구','Fail','Low','D-09']
+];
+const DEF=[
+['D-01','Medium','보안','주문 데이터가 로그인 없이 읽힘','CS-01','로그아웃 상태에서 Firestore orders를 읽으면 주문 10건의 이름·전화번호 뒷4자리·금액이 모두 조회된다. 본인확인(뒷4자리)이 화면 코드에서만 이뤄져서 우회된다.','주문 조회를 서버(Cloud Functions 등)로 옮기고 orders 읽기를 막는다. 실습용 가상 데이터라면 "알려진 한계"로 문서화.'],
+['D-02','Medium','기능','관리자 입력값 검증 없음','AF-11','판매가에 문자를 넣으면 0, 음수는 음수 그대로, 상품명 빈칸도 저장된다. 이름이 빈 새 행을 추가하면 고객 화면 타일에 즉시 빈 상품이 노출된다.','저장 전에 숫자·필수값 검사를 하고 오류 문구 표시. 새 행은 "비공개" 상태로 시작하거나 이름이 있어야 노출.'],
+['D-03','Low','UI','모바일 "처음으로" 버튼 줄바꿈','CU-04','375px에서 버튼이 좁아 "처음으 / 로"로 두 줄이 된다.','버튼에 white-space:nowrap 적용, 부제 문구는 줄여서 표시.'],
+['D-04','Low','UI','입력창 안내 문구 잘림','CU-05','placeholder가 길어 2줄이 되고 입력창 높이(1줄)에서 잘린다.','문구를 짧게(예: "메시지를 입력하세요") 바꾸고 Enter 안내는 입력창 밖에 표시.'],
+['D-05','Low','접근성','입력창 라벨 없음','CU-06','textarea에 aria-label/label이 없어 placeholder에만 의존한다.','aria-label="메시지 입력" 추가.'],
+['D-06','Low','UI','PC에서 페이지가 한 화면을 넘음','CU-02','1440×900에서 문서 높이 932px로 32px 스크롤이 생긴다.','채팅 카드 높이를 뷰포트 기준(100dvh − 상단)으로 제한.'],
+['D-07','Low','UX','질문 분석에 "****"가 상위 질문으로 집계','AU-04','마스킹된 전화번호 입력이 자주 나온 질문 TOP에 포함돼 분석이 왜곡된다.','집계에서 마스킹 값·주문번호 입력은 제외하거나 "본인확인 입력"으로 묶기.'],
+['D-08','Low','UX','긴 질문이 표에 전체 표시되고 FAQ로 그대로 등록','AU-03','3,000자 질문이 상담 내역·질문 분석에서 줄임 없이 표시되고 "FAQ로 등록"도 그대로 만들어진다.','표시 길이 제한(예: 80자 + 더보기), 입력 글자수 제한, FAQ 등록 시 질문 편집 단계 추가.'],
+['D-09','Low','문구','관리자 안내 문구가 이전 구조 기준','AU-05','AI·에이전트: "아티팩트 내장 호출 · 별도 API 키 없음 · 상담하는 사람의 계정으로 실행", 상담 내역: "Contributor로 공유받은 고객만 기록" 등 현재 구조와 맞지 않는다.','현재 동작(API 키·로컬 서버·Firestore)에 맞게 문구 수정.'],
+['D-10','Low','운영','오입력 3회 초기화 후 즉시 재시도 가능','CF-11','3번 틀리면 처음부터 다시 하지만 대기 시간이 없어 반복 시도가 가능하다.','실패 횟수를 브라우저·서버에 저장해 일정 시간 잠금. D-01 해결 시 함께 정리.']
+];
+const $=s=>document.querySelector(s),ST=['Pass','Fail','미실행'];
+$('#meta').textContent=`테스트일 ${META.date} · 대상 ${META.target} · 수행 ${META.tester}`;
+const rows=TC.map(r=>({id:r[0],area:r[1],type:r[2],title:r[3],steps:r[4],exp:r[5],act:r[6],st:r[7],sev:r[8],bug:r[9]}));
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function renderTC(){
+  const a=$('#fArea').value,t=$('#fType').value,s=$('#fStat').value,q=$('#fQ').value.trim().toLowerCase();
+  const list=rows.filter(r=>(!a||r.area===a)&&(!t||r.type===t)&&(!s||r.st===s)&&(!q||(r.id+r.title+r.steps).toLowerCase().includes(q)));
+  const tb=$('#tb');tb.textContent='';
+  list.forEach(r=>{const tr=el('tr');
+    tr.append(el('td','id',r.id),el('td',0,r.area),el('td',0,r.type),el('td',0,r.title),el('td',0,r.steps),el('td',0,r.exp),el('td',0,r.act));
+    const c=el('td');c.append(el('span','badge '+r.st,r.st));tr.append(c);
+    const sv=el('td');if(r.sev)sv.append(el('span','sev '+r.sev,r.sev));tr.append(sv,el('td',0,r.bug));tb.append(tr)});
+  $('#cnt').textContent=`${list.length} / ${rows.length}건`;
+}
+['#fArea','#fType','#fStat'].forEach(i=>$(i).onchange=renderTC);$('#fQ').oninput=renderTC;
+$('#csv').onclick=()=>{
+  const h=['TC ID','영역','구분','시나리오','테스트 절차','기대 결과','실제 결과','결과','심각도','결함'];
+  const esc=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const csv='﻿'+[h,...rows.map(r=>[r.id,r.area,r.type,r.title,r.steps,r.exp,r.act,r.st,r.sev,r.bug])].map(l=>l.map(esc).join(',')).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='kkomarket-test-cases.csv';a.click();
+};
+function renderRep(){
+  const n=k=>rows.filter(r=>r.st===k).length,tot=rows.length,run=tot-n('미실행');
+  const cards=$('#cards');cards.textContent='';
+  [['전체 TC',tot,''],['Pass',n('Pass'),'var(--pass)'],['Fail',n('Fail'),'var(--fail)'],['미실행',n('미실행'),'var(--skip)'],['합격률(실행 기준)',run?Math.round(n('Pass')/run*100)+'%':'-',''],['결함',DEF.length+'건','']].forEach(([l,v,c])=>{
+    const d=el('div','card');d.append(el('small',0,l));const b=el('b',0,v);if(c)b.style.color=c;d.append(b);cards.append(d)});
+  const bars=$('#bars');bars.textContent='';
+  [['고객','기능'],['고객','UI/UX'],['고객','보안'],['관리자','기능'],['관리자','UI/UX']].forEach(([a,t])=>{
+    const g=rows.filter(r=>r.area===a&&r.type===t);if(!g.length)return;
+    const row=el('div','bar');row.append(el('span',0,`${a} · ${t}`));
+    const tr=el('div','track');ST.forEach(s=>{const c=g.filter(r=>r.st===s).length;if(!c)return;const i=el('i');i.style.width=c/g.length*100+'%';i.style.background=s==='Pass'?'var(--pass)':s==='Fail'?'var(--fail)':'var(--skip)';i.title=`${s} ${c}`;tr.append(i)});
+    row.append(tr,el('span',0,`${g.filter(r=>r.st==='Pass').length}/${g.length} Pass`));bars.append(row)});
+  const sum=$('#sum');sum.textContent='';
+  [`전체 ${tot}건 중 ${n('Pass')}건 Pass, ${n('Fail')}건 Fail, ${n('미실행')}건 미실행 (합격률 ${run?Math.round(n('Pass')/run*100):0}%, 실행 ${run}건 기준).`,
+   '핵심 기능(FAQ·재고·주문 조회·추천·상담 기록, 관리자 수정의 실시간 반영, 로그인·권한)은 기대대로 동작했다.',
+   `Fail ${n('Fail')}건은 모두 Medium 이하이며, 우선 고칠 것은 D-01(주문 데이터 공개 읽기)과 D-02(관리자 입력 검증).`,
+   '나머지는 모바일 버튼 줄바꿈·입력창 문구 잘림·문구 정리 같은 UI/문구 수정이다.',
+   `미실행 ${n('미실행')}건은 두 번째 Google 계정, AI 연결 테스트 버튼·키 저장, 샘플 되돌리기, 주문·배송 편집이다. 다음 회차에 이어서 진행한다.`].forEach(t=>sum.append(el('li',0,t)));
+}
+function renderDef(){
+  const box=$('#def');box.textContent='';
+  DEF.forEach(d=>{const c=el('div','defect '+d[1]);c.append(el('h3',0,`${d[0]} · ${d[3]}`));
+    const l=el('dl');[['심각도',d[1]],['구분',d[2]],['관련 TC',d[4]],['현상',d[5]],['개선 제안',d[6]]].forEach(([k,v])=>{l.append(el('dt',0,k),el('dd',0,v))});c.append(l);box.append(c)});
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['tc','rep','def'].forEach(id=>$('#'+id).hidden=id!==b.dataset.t);
+});
+renderTC();renderRep();renderDef();
+</script>
+</body>
+</html>

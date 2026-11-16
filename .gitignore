@@ -2,3 +2,4 @@
 node_modules
 README.md
 .firebase/
+.DS_Store
