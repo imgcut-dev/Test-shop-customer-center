@@ -24,6 +24,11 @@ service cloud.firestore {
       allow list, create, update: if isAdmin();
       allow delete: if isAdmin() && request.auth.token.email != email;
     }
+    // 관리자 피드백: 관리자만 읽기·쓰기, 단 '지침 반영(apply=true)'인 항목은 챗봇이 읽을 수 있음
+    match /feedback/{id} {
+      allow read: if isAdmin() || resource.data.apply == true;
+      allow write: if isAdmin();
+    }
     // 상담 기록: 고객은 자기 문서만 읽고 쓰기, 전체 목록은 관리자만
     match /chats/{uid} {
       allow get, write: if true;

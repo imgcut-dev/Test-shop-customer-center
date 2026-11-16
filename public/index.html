@@ -116,6 +116,7 @@ button.kpi:hover{border-color:var(--accent)}
 .fld input,.fld textarea,select,.kv input{font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .fld textarea{resize:vertical;line-height:1.6}
 .btns{display:flex;align-items:center;gap:10px}
+td.fb{min-width:250px;padding:6px;vertical-align:top;white-space:normal}td.fb textarea{width:100%;box-sizing:border-box;font:inherit;font-size:12px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 6px;margin:4px 0;resize:vertical}td.fb input[type=checkbox],td input[type=checkbox]{width:auto;min-width:0}.rt{font-size:16px;background:none;border:1px solid var(--line);border-radius:8px;padding:2px 8px;cursor:pointer;margin-right:4px}.rt.on{background:var(--accent);border-color:var(--accent)}.ap{font-size:12px;margin-right:8px}
 .btn2{font:inherit;font-weight:700;background:var(--accent);color:var(--accent-fg);border:0;border-radius:8px;padding:8px 20px;cursor:pointer}
 .btn3{font:inherit;background:none;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer}
 .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
@@ -272,7 +273,7 @@ const COLS={
  faq:{label:'FAQ·지식',cols:[['category','분류'],['q','질문','area'],['a','답변','area'],['keywords','키워드(쉼표)'],['enabled','사용(Y/N)']]}
 };
 const KEYLABEL={products:'상품ID',stock:'상품ID',orders:'주문번호',deliveries:'주문번호',faq:'FAQ ID'};
-const D={products:{},stock:{},orders:{},deliveries:{},faq:{}};const loaded={};let agent={};let AD={};
+const D={products:{},stock:{},orders:{},deliveries:{},faq:{}};const loaded={};let agent={};let AD={};let FB={},GL={};
 let db=null,sample=null,isAdmin=false,uid=null,CH=[];
 const $=id=>document.getElementById(id);
 const mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
@@ -404,7 +405,7 @@ function shipEstimate(now=new Date()){
   const range=from.getTime()===to.getTime()?f(from):f(from)+'~'+f(to);
   return {ship:f(ship),range,text:`지금 주문하시면 ${f(ship)}에 출고되어 ${range}에 도착할 예정이에요 📦 (평일 ${a.shipCutoff}시 이전 결제 기준, 주말·공휴일 제외, 지역과 택배 상황에 따라 달라질 수 있어요)`};
 }
-function buildPrompt(m){const a=AG(),e=shipEstimate();return a.instructions+'\n말투: '+a.tone+'\n\n[배송 안내 기준]\n지금 주문하면 '+e.ship+' 출고, 도착 예상 '+e.range+' (평일 '+a.shipCutoff+'시 이전 결제 기준, 주말·공휴일 제외). 고객이 예상 배송일을 물으면 이 내용으로 답하세요.\n\n[FAQ·정책 정보]\n'+(faqText()||'(없음)')+'\n\n[상품 데이터]\n'+catalog()+'\n\n[고객 메시지]\n'+m}
+function buildPrompt(m){const a=AG(),e=shipEstimate();return a.instructions+'\n말투: '+a.tone+'\n\n[배송 안내 기준]\n지금 주문하면 '+e.ship+' 출고, 도착 예상 '+e.range+' (평일 '+a.shipCutoff+'시 이전 결제 기준, 주말·공휴일 제외). 고객이 예상 배송일을 물으면 이 내용으로 답하세요.\n\n[FAQ·정책 정보]\n'+(faqText()||'(없음)')+'\n\n[상품 데이터]\n'+catalog()+(guideText()?'\n\n[관리자 피드백 지침 — 반드시 따르세요]\n'+guideText():'')+'\n\n[고객 메시지]\n'+m}
 function faqMatch(msg){
   const m=msg.replace(/\s+/g,'');let best=null,bs=0;
   for(const f of faqList()){const sc=String(f.keywords||'').split(/[,，]/).map(x=>x.replace(/\s+/g,'')).filter(Boolean).filter(k=>m.includes(k)).length;if(sc>bs){bs=sc;best=f}}
@@ -446,18 +447,18 @@ t.oninput=()=>{t.style.height='auto';t.style.height=Math.min(t.scrollHeight+2,12
 /* ---------- admin ---------- */
 let tab='dash',stTimer=null;
 const st=mk('span');st.id='st';
-function status(x){st.textContent=x;clearTimeout(stTimer);if(x==='저장됨')stTimer=setTimeout(()=>st.textContent='',2500)}
+function status(x){st.textContent=x;clearTimeout(stTimer);if(x.startsWith('저장됨'))stTimer=setTimeout(()=>st.textContent='',2500)}
 const NAV=[
  {g:'대시보드',top:true,items:[['dash','대시보드']]},
  {g:'상담 관리',items:[['chats','상담 내역'],['qa','질문 분석']]},
- {g:'챗봇 설정',items:[['ai','AI·에이전트'],['conn','AI 연결'],['faq','FAQ·지식']]},
+ {g:'챗봇 설정',items:[['ai','AI·에이전트'],['conn','AI 연결'],['faq','FAQ·지식'],['fb','피드백 지침']]},
  {g:'상품·주문 데이터',items:[['products','상품'],['stock','재고'],['orders','주문'],['deliveries','배송']]},
  {g:'관리자 관리',items:[['admins','관리자 계정']]}
 ];
 const collapsed={};
 function renderTabs(){
   const box=$('tabs');box.textContent='';
-  const cnt=k=>k==='chats'?CH.length:k==='admins'?Object.keys(AD).length+window.__kkmAuth.owners.length:COLS[k]?Object.keys(D[k]).length:null;
+  const cnt=k=>k==='chats'?CH.length:k==='admins'?Object.keys(AD).length+window.__kkmAuth.owners.length:k==='fb'?Object.keys(FB).length:COLS[k]?Object.keys(D[k]).length:null;
   const item=([k,l],cls)=>{const n=cnt(k);const b=mk('button',cls,l+(n!=null?' ('+n+')':''));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',k===tab);b.onclick=()=>{tab=k;renderAdmin()};return b};
   NAV.forEach(g=>{
     if(g.top){box.append(item(g.items[0],'g-top'));return}
@@ -561,16 +562,71 @@ function renderDash(box){
   if(moving.length){p7.append(mk('div','sub','배송중인 주문'));lines(p7,moving.map(([id,d])=>`${id}  ·  ${d.carrier||'-'} ${d.tracking||''}  ·  ${d.location||'-'}  ·  도착예정 ${d.eta||'-'}`))}
   grid.append(p1,p2,p3,p4,p5,p6,p7);box.append(grid);
 }
-function chatTable(list){
-  const tb=mk('table'),hr=mk('tr');['시각','고객','질문','답변','방식','응답'].forEach(x=>hr.append(mk('th',null,x)));const th=mk('thead');th.append(hr);tb.append(th);
+/* ---------- 관리자 피드백 → AI 지침 ---------- */
+function guideText(){
+  return Object.values(GL).filter(g=>g.apply&&g.note).sort((x,y)=>(y.at||0)-(x.at||0)).slice(0,10).map(g=>{
+    const q=String(g.q||'').slice(0,40),a=String(g.a||'').slice(0,80);
+    return g.rating==='down'?`- 이런 질문("${q}")에는 "${a}" 처럼 답하지 마세요. 지침: ${g.note}`:`- 좋은 답변 예시: 질문 "${q}" → "${a}". 이유: ${g.note}`}).join('\n');
+}
+const fbId=c=>c.cid+'_'+c.ts;
+function fbCell(c){
+  const id=fbId(c),cur=FB[id]||{};let rating=cur.rating||'';
+  const td=mk('td','fb');
+  const up=mk('button','rt'+(rating==='up'?' on':''),'👍'),dn=mk('button','rt'+(rating==='down'?' on':''),'👎');up.type=dn.type='button';
+  up.setAttribute('aria-label','좋은 답변');dn.setAttribute('aria-label','아쉬운 답변');
+  const note=document.createElement('textarea');note.rows=2;note.placeholder='피드백·지침 (예: 가격 질문엔 할인율도 함께 알려줘)';note.value=cur.note||'';note.setAttribute('aria-label','피드백 문구');
+  const ap=document.createElement('input');ap.type='checkbox';ap.checked=!!cur.apply;
+  const lab=mk('label','ap');lab.append(ap,' AI 지침에 반영');
+  const sv=mk('button','btn3','저장');sv.type='button';const msg=mk('small','note','');
+  const setR=r=>{rating=rating===r?'':r;up.classList.toggle('on',rating==='up');dn.classList.toggle('on',rating==='down')};
+  up.onclick=()=>setR('up');dn.onclick=()=>setR('down');
+  sv.onclick=async()=>{
+    const n=note.value.trim();
+    if(!rating&&!n){msg.textContent='평가나 문구를 입력해 주세요';return}
+    if(ap.checked&&!n){msg.textContent='지침에 반영하려면 문구가 필요해요';return}
+    try{msg.textContent='저장 중…';await db.collection('feedback').doc(id).set({rating,note:n,apply:ap.checked,q:c.q,a:String(c.a).slice(0,200),kind:c.kind,by:window.__kkmAuth.email(),at:Date.now()});msg.textContent='저장됨';status('저장됨 · 피드백 지침 탭에서 확인할 수 있어요')}
+    catch(e){msg.textContent='실패: '+(e.message||e.code)}
+  };
+  td.append(up,dn,note,lab,sv,msg);return td;
+}
+function renderFb(box){
+  const s1=sec('피드백 지침');
+  s1.append(mk('p','note','상담 내역에서 남긴 피드백이 모여요. "AI 지침에 반영"을 켠 항목(최근 10개)은 AI가 다음 답변부터 따라요. 문구를 고치거나 반영을 끄고 켜면 바로 적용돼요. 규칙으로 즉시 나가는 답변은 FAQ를 고쳐야 바뀌어요.'));
+  const ids=Object.keys(FB).sort((x,y)=>(FB[y].at||0)-(FB[x].at||0));
+  if(!ids.length)s1.append(mk('div','deny','아직 피드백이 없어요. 상담 내역에서 답변에 👍👎와 문구를 남겨 보세요.'));
+  else{
+    const tb=mk('table'),hr=mk('tr');['평가','질문','당시 답변','지침 문구','반영','작성','' ].forEach(x=>hr.append(mk('th',null,x)));
+    const th=mk('thead');th.append(hr);tb.append(th);const body=mk('tbody');
+    ids.forEach(id=>{
+      const f=FB[id],tr=mk('tr');
+      const nt=mk('input');nt.value=f.note||'';nt.setAttribute('aria-label','지침 문구');nt.style.minWidth='260px';
+      nt.onchange=async()=>{try{status('저장 중…');await db.collection('feedback').doc(id).update({note:nt.value.trim(),at:Date.now()});status('저장됨')}catch(e){status('저장 실패: '+(e.message||e.code))}};
+      const ap=document.createElement('input');ap.type='checkbox';ap.checked=!!f.apply;ap.setAttribute('aria-label','지침에 반영');
+      ap.onchange=async()=>{if(ap.checked&&!nt.value.trim()){ap.checked=false;status('문구를 먼저 입력해 주세요');return}
+        try{status('저장 중…');await db.collection('feedback').doc(id).update({apply:ap.checked});status('저장됨')}catch(e){status('저장 실패: '+(e.message||e.code))}};
+      const tdN=mk('td');tdN.append(nt);
+      const tdA2=mk('td');tdA2.append(ap);
+      const d=mk('button','del','삭제');d.type='button';let armed=false,tm;
+      d.onclick=async()=>{if(!armed){armed=true;d.textContent='한 번 더 누르면 삭제';tm=setTimeout(()=>{armed=false;d.textContent='삭제'},3000);return}
+        clearTimeout(tm);try{status('삭제 중…');await db.collection('feedback').doc(id).delete();status('저장됨')}catch(e){status('삭제 실패: '+(e.message||e.code))}};
+      const tdD=mk('td');tdD.append(d);
+      tr.append(mk('td','dim',f.rating==='up'?'👍':f.rating==='down'?'👎':'-'),mk('td','txt',f.q),mk('td','txt',f.a),tdN,tdA2,mk('td','dim',(f.by||'')+' · '+fmtT(f.at)),tdD);body.append(tr)});
+    tb.append(body);const w=mk('div');w.style.overflowX='auto';w.append(tb);s1.append(w);
+  }
+  box.append(s1);
+  const s2=sec('AI에게 붙는 피드백 지침 미리보기');
+  s2.append(mk('pre','prompt',guideText()||'(반영된 피드백이 없어요)'));box.append(s2);
+}
+function chatTable(list,withFb){
+  const tb=mk('table'),hr=mk('tr');['시각','고객','질문','답변','방식','응답',...(withFb?['피드백']:[])].forEach(x=>hr.append(mk('th',null,x)));const th=mk('thead');th.append(hr);tb.append(th);
   const body=mk('tbody'),KL={fast:'즉시',ai:'AI',error:'오류'};
-  list.forEach(c=>{const tr=mk('tr');tr.append(mk('td','dim',fmtT(c.ts)),mk('td','dim','#'+c.cust),mk('td','txt',c.q),mk('td','txt',c.a),mk('td','dim',KL[c.kind]||c.kind),mk('td','dim',(c.ms/1000).toFixed(1)+'초'));body.append(tr)});
+  list.forEach(c=>{const tr=mk('tr');tr.append(mk('td','dim',fmtT(c.ts)),mk('td','dim','#'+c.cust),mk('td','txt',c.q),mk('td','txt',c.a),mk('td','dim',KL[c.kind]||c.kind),mk('td','dim',(c.ms/1000).toFixed(1)+'초'));if(withFb)tr.append(fbCell(c));body.append(tr)});
   tb.append(body);return tb;
 }
 function renderChats(box){
-  box.append(mk('p','note','고객이 채팅할 때마다 질문(숫자 4자리 이상은 가려짐)과 답변이 기록됩니다. 고객당 최근 150건까지 보관돼요. 기록은 편집 권한 이상(Contributor)으로 공유받은 고객만 남습니다.'));
+  box.append(mk('p','note','고객이 채팅할 때마다 질문(숫자 4자리 이상은 가려짐)과 답변이 기록돼요. 고객당 최근 150건까지 보관해요. 오른쪽에서 👍👎와 피드백을 남기고 \'AI 지침에 반영\'을 켜면, AI가 다음 답변부터 그 지침을 따라요(규칙으로 나가는 즉시 답변은 FAQ를 고쳐야 바뀝니다).'));
   if(!CH.length){box.append(mk('div','deny','아직 상담 기록이 없어요.'));return}
-  const w=mk('div');w.style.overflowX='auto';w.append(chatTable(CH.slice(0,200)));box.append(w);
+  const w=mk('div');w.style.overflowX='auto';w.append(chatTable(CH.slice(0,200),true));box.append(w);
 }
 const fld=(label,el,help)=>{const d=mk('div','fld');const l=mk('label',null,label);d.append(l,el);if(help)d.append(mk('small','note',help));return d};
 function renderAI(box){
@@ -768,7 +824,7 @@ function renderAdmins(box){
 function renderAdmin(){
   renderTabs();
   const box=$('adm');box.textContent='';
-  const SPECIAL={dash:renderDash,chats:renderChats,qa:renderQA,ai:renderAI,conn:renderConn,admins:renderAdmins};
+  const SPECIAL={dash:renderDash,chats:renderChats,qa:renderQA,ai:renderAI,conn:renderConn,admins:renderAdmins,fb:renderFb};
   if(SPECIAL[tab]){SPECIAL[tab](box);renderBar();return}
   const cfg=COLS[tab];
   if(tab==='faq')box.append(mk('p','note','사용(Y)으로 둔 항목은 챗봇이 즉시 답변하고, AI에게도 근거 정보로 전달됩니다. 키워드는 쉼표로 구분하며, 고객 질문에 키워드가 하나라도 들어 있으면 이 답변이 바로 나갑니다. 처음 들어 있는 정책(배송비, 환불 기간 등)은 예시이니 실제 운영 정책으로 고쳐 주세요.'));
@@ -857,8 +913,10 @@ async function init(){
   route();
   if(!db){$('sub').textContent='데이터에 연결되지 않았어요';add('bot','상품 데이터에 연결되지 않아 일부 안내가 제한됩니다.');return}
   if(uid)try{const m=await db.doc('chats/'+uid).get();if(m.exists)myLog=(m.data().entries||[]).slice(-150)}catch(e){}
+  if(isAdmin)db.collection('feedback').onSnapshot(s=>{FB={};s.docs.forEach(d=>FB[d.id]=d.data());GL=Object.fromEntries(Object.entries(FB).filter(([,v])=>v.apply));loaded.feedback=true;onData('feedback')},()=>{});
+  else db.collection('feedback').where('apply','==',true).onSnapshot(s=>{GL={};s.docs.forEach(d=>GL[d.id]=d.data())},()=>{});
   if(isAdmin)db.collection('admins').onSnapshot(s=>{AD={};s.docs.forEach(d=>AD[d.id]=d.data());loaded.admins=true;onData('admins')},()=>{});
-  if(isAdmin)db.collection('chats').onSnapshot(sn=>{CH=[];sn.docs.forEach((d,i)=>{((d.data()||{}).entries||[]).forEach(e=>CH.push({...e,cust:i+1}))});CH.sort((a,b)=>b.ts-a.ts);loaded.chats=true;onData('chats')},()=>{loaded.chats=true;onData('chats')});
+  if(isAdmin)db.collection('chats').onSnapshot(sn=>{CH=[];sn.docs.forEach((d,i)=>{((d.data()||{}).entries||[]).forEach(e=>CH.push({...e,cust:i+1,cid:d.id}))});CH.sort((a,b)=>b.ts-a.ts);loaded.chats=true;onData('chats')},()=>{loaded.chats=true;onData('chats')});
   db.doc('settings/agent').onSnapshot(d=>{agent=d.exists?d.data():{};loaded.settings=true;$('hdName').textContent=AG().name;if(atHome&&log.children.length===1)home();onData('settings')},()=>{});
   Object.keys(COLS).forEach(c=>{
     db.collection(c).onSnapshot(s=>{D[c]={};s.docs.forEach(d=>D[c][d.id]=d.data());loaded[c]=true;if(atHome&&log.children.length===1)setChips(homeChips());if(c==='products'||c==='stock')renderFront();onData(c)},e=>{loaded[c]=true;onData(c)});

@@ -30,6 +30,7 @@ th:last-child,td:last-child{border-right:0}
 thead th{position:sticky;top:0;background:var(--head);font-size:12px;white-space:nowrap;z-index:1}
 tbody tr:hover{background:var(--head)}
 td.id{white-space:nowrap;font-weight:600}
+tbody td:nth-child(2),tbody td:nth-child(3){white-space:nowrap}
 .badge{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
 .Pass{background:var(--passbg);color:var(--pass)}.Fail{background:var(--failbg);color:var(--fail)}.미실행{background:var(--skipbg);color:var(--skip)}
 .sev{font-size:12px;font-weight:700}.sev.High,.sev.Medium{color:var(--fail)}.sev.Low{color:var(--skip)}
@@ -52,6 +53,19 @@ ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
 .defect dt{color:var(--mute);font-size:12px}.defect dd{margin:0}
 .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .shots figure{margin:0}.shots img{width:100%;border:1px solid var(--line);border-radius:10px}.shots figcaption{font-size:12px;color:var(--mute);margin-top:4px}
+@page{size:A4 landscape;margin:10mm}
+.ph{display:none}
+@media print{
+ :root{--bg:#fff;--panel:#fff;--fg:#111;--mute:#555;--line:#ccc;--head:#f1f1f1}
+ body{font-size:11px}header{padding-top:0}nav,.tools,.pdfbtn{display:none!important}
+ section[hidden]{display:block!important}
+ section{break-before:page}#tc{break-before:auto}
+ .ph{display:block;font-size:16px;margin:0 0 8px}
+ .wrap{max-height:none;overflow:visible;border:0}
+ table{min-width:0;font-size:9.5px}th,td{padding:4px 6px}thead th{position:static}tr{break-inside:avoid}
+ .box,.defect,.card{break-inside:avoid}
+ .shots{grid-template-columns:repeat(3,1fr)}.shots img{max-height:240px;object-fit:contain}
+}
 @media (max-width:640px){header,main,nav{padding-left:14px;padding-right:14px}.bar{grid-template-columns:80px 1fr 90px}}
 </style>
 </head>
@@ -59,6 +73,7 @@ ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
 <header>
   <h1>꼬순내 마켓 · 고객 화면 / 관리자 화면 테스트</h1>
   <div class="meta" id="meta"></div>
+  <p style="margin:8px 0 0"><a class="btn pdfbtn" href="test-report.pdf" download style="text-decoration:none;display:inline-block">PDF 다운로드</a></p>
 </header>
 <nav role="tablist" aria-label="보고서 탭">
   <button role="tab" aria-selected="true" data-t="tc">테스트 케이스 (TC)</button>
@@ -67,6 +82,7 @@ ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
 </nav>
 <main>
 <section id="tc">
+  <h2 class="ph">1. 테스트 케이스 (TC)</h2>
   <div class="tools">
     <select id="fArea" aria-label="영역"><option value="">영역 전체</option><option>고객</option><option>관리자</option></select>
     <select id="fType" aria-label="구분"><option value="">구분 전체</option><option>기능</option><option>UI/UX</option><option>보안</option></select>
@@ -82,6 +98,7 @@ ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
 </section>
 
 <section id="rep" hidden>
+  <h2 class="ph">2. 결과 보고서</h2>
   <div class="cards" id="cards"></div>
   <div class="grid2">
     <div class="box"><h2>영역 × 구분별 결과</h2><div id="bars"></div>
@@ -95,13 +112,14 @@ ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
       <li>브라우저: Chrome(관리자, 사용자 Google 로그인), 앱 내장 브라우저(고객), 화면폭 PC 1440 · 모바일 375</li>
       <li>방법: 화면 조작과 스크립트로 입력·응답·저장값(Firestore)을 직접 비교</li>
       <li>데이터: 가상 샘플(상품·재고·주문·배송 각 10건, FAQ 8건). 수정한 값은 모두 원복</li>
-      <li>제외: AI 연결 테스트 버튼·키 저장·샘플 되돌리기·다른 Google 계정·주문/배송 편집 반영 (TC 결과 '미실행')</li>
+      <li>제외: AI 연결 테스트 버튼·키 저장·샘플 되돌리기·다른 Google 계정·주문/배송 편집 반영·피드백 지침의 실제 AI 적용 (TC 결과 '미실행')</li>
     </ul></div>
     <div class="box"><h2>테스트 중 확인한 점</h2><ul class="l">
       <li>규칙 답변(FAQ·재고·주문조회·추천)은 평균 0초대로 즉시 응답, AI 응답은 약 1~2초(5건 평균 1.8초)</li>
       <li>관리자 수정은 새로고침 없이 고객 화면에 실시간 반영</li>
       <li>대시보드 KPI(주문 수·매출·배송중·품절/소량·즉시응답률·AI 평균)는 Firestore 원본 값과 일치</li>
       <li>비로그인 상태에서 데이터 수정·상담 목록 조회는 차단, 단 주문 데이터 읽기는 열려 있음(결함 D-01)</li>
+      <li>피드백 → AI 지침: 반영을 켜면 프롬프트에 [관리자 피드백 지침]이 붙고, 끄거나 삭제하면 사라짐. 고객 화면은 반영된 항목만 읽을 수 있음</li>
       <li>테스트용 상담 기록이 Firestore에 남아 있음(관리자 상담 내역에 표시)</li>
     </ul></div>
   </div>
@@ -166,6 +184,17 @@ const TC=[
 ['AF-17','관리자','기능','AI 연결 테스트·키 저장','AI 연결 화면에서 키 저장, 테스트 버튼','성공/실패와 응답시간 표시','화면 요소만 확인, 실행하지 않음','미실행','',''],
 ['AF-18','관리자','기능','샘플 데이터로 되돌리기','버튼 2회 클릭','샘플 값으로 복원','실행하지 않음 (수정한 값은 수동 원복)','미실행','',''],
 ['AF-19','관리자','기능','주문·배송 편집 반영','주문 상태 수정 후 고객 조회','수정된 상태로 조회','실행하지 않음','미실행','',''],
+['AF-20','관리자','기능','관리자 계정 추가','관리자 관리 > 이메일 입력 후 추가 (형식 오류·중복·소유자 이메일 포함)','정상 추가, 잘못된 형식과 중복은 안내 후 거부','추가됨(Firestore admins 저장), "이메일 형식이 올바르지 않아요"·"이미 관리자예요" 표시','Pass','',''],
+['AF-21','관리자','기능','관리자 계정 삭제·보호','삭제 2단계 클릭 / 소유자·본인 삭제 시도','2단계 확인 후 삭제, 소유자·본인은 삭제 불가','삭제 정상, 소유자·본인 행은 삭제 버튼 없음, 본인 문서 삭제 요청은 규칙에서 차단','Pass','',''],
+['AF-22','관리자','보안','관리자 목록 접근 제어','로그인 없이 admins 읽기·쓰기 요청','차단','목록·개별 조회·추가 모두 403 permission-denied','Pass','',''],
+['AF-23','관리자','기능','등록한 두 번째 계정 로그인','추가한 다른 Google 계정으로 로그인','관리자 화면 접근 가능','계정이 없어 확인하지 못함','미실행','',''],
+['FB-01','관리자','기능','상담 내역 피드백 입력 화면','상담 내역 행의 피드백 칸 확인','👍👎, 문구 입력, "AI 지침에 반영", 저장 버튼 표시','모든 행에 표시됨','Pass','',''],
+['FB-02','관리자','기능','피드백 입력 검증','빈 상태 저장 / 문구 없이 "지침에 반영" 후 저장','안내 후 저장 거부','"평가나 문구를 입력해 주세요", "지침에 반영하려면 문구가 필요해요" 표시','Pass','',''],
+['FB-03','관리자','기능','피드백 저장','👎 + 문구 + 반영 체크 후 저장','Firestore feedback에 평가·문구·질문·답변·작성자 저장','저장 확인, 저장 후 상단에 "저장됨" 안내 표시','Pass','',''],
+['FB-04','관리자','기능','피드백 지침 탭 관리','목록 확인 / 문구 수정 / 반영 끄고 켜기 / 삭제','수정·토글 즉시 저장, 삭제는 2단계','모두 정상, 빈 목록 안내 표시','Pass','',''],
+['FB-05','관리자','기능','피드백의 AI 지침 반영','AI·에이전트 > 프롬프트 미리보기 (반영 켬/끔/삭제)','반영 항목만 [관리자 피드백 지침]으로 [고객 메시지] 앞에 포함','켜면 포함, 끄거나 삭제하면 제외','Pass','',''],
+['FB-06','관리자','보안','피드백 읽기 권한','로그인 없이 feedback 조회 (반영 항목만 / 전체)','반영 항목만 읽기 가능, 전체는 차단','반영 항목 쿼리 200(1건), 전체 쿼리 403','Pass','',''],
+['FB-07','관리자','기능','AI가 지침을 실제로 따르는지','반영된 지침으로 같은 유형 질문을 AI에 질문','답변에 지침 내용이 반영','프롬프트 포함까지만 확인하고 AI 호출은 하지 않음','미실행','',''],
 ['AU-01','관리자','UI/UX','PC 레이아웃','1440폭에서 대시보드·표 확인','좌측 메뉴 + 본문, 가로 넘침 없음','정상 (표·카드 겹침 없음)','Pass','',''],
 ['AU-02','관리자','UI/UX','메뉴 구조','1depth 메뉴 구분 확인','상담 관리 / 챗봇 설정 / 상품·주문 데이터','3그룹으로 구분되어 표시','Pass','',''],
 ['AU-03','관리자','UI/UX','긴 텍스트 표시','3,000자 질문이 있을 때 상담 내역','줄임 표시','전체 3,000자가 펼쳐져 행 높이 170px','Fail','Low','D-08'],
@@ -181,7 +210,7 @@ const DEF=[
 ['D-06','Low','UI','PC에서 페이지가 한 화면을 넘음','CU-02','1440×900에서 문서 높이 932px로 32px 스크롤이 생긴다.','채팅 카드 높이를 뷰포트 기준(100dvh − 상단)으로 제한.'],
 ['D-07','Low','UX','질문 분석에 "****"가 상위 질문으로 집계','AU-04','마스킹된 전화번호 입력이 자주 나온 질문 TOP에 포함돼 분석이 왜곡된다.','집계에서 마스킹 값·주문번호 입력은 제외하거나 "본인확인 입력"으로 묶기.'],
 ['D-08','Low','UX','긴 질문이 표에 전체 표시되고 FAQ로 그대로 등록','AU-03','3,000자 질문이 상담 내역·질문 분석에서 줄임 없이 표시되고 "FAQ로 등록"도 그대로 만들어진다.','표시 길이 제한(예: 80자 + 더보기), 입력 글자수 제한, FAQ 등록 시 질문 편집 단계 추가.'],
-['D-09','Low','문구','관리자 안내 문구가 이전 구조 기준','AU-05','AI·에이전트: "아티팩트 내장 호출 · 별도 API 키 없음 · 상담하는 사람의 계정으로 실행", 상담 내역: "Contributor로 공유받은 고객만 기록" 등 현재 구조와 맞지 않는다.','현재 동작(API 키·로컬 서버·Firestore)에 맞게 문구 수정.'],
+['D-09','Low','문구','관리자 안내 문구가 이전 구조 기준','AU-05','AI·에이전트: "아티팩트 내장 호출 · 별도 API 키 없음 · 상담하는 사람의 계정으로 실행", 상담 내역: "Contributor로 공유받은 고객만 기록" 등 현재 구조와 맞지 않는다.','현재 동작(API 키·로컬 서버·Firestore)에 맞게 문구 수정. (상담 내역 안내 문구는 피드백 기능 추가 때 수정됨, AI·에이전트 화면 문구는 남아 있음)'],
 ['D-10','Low','운영','오입력 3회 초기화 후 즉시 재시도 가능','CF-11','3번 틀리면 처음부터 다시 하지만 대기 시간이 없어 반복 시도가 가능하다.','실패 횟수를 브라우저·서버에 저장해 일정 시간 잠금. D-01 해결 시 함께 정리.']
 ];
 const $=s=>document.querySelector(s),ST=['Pass','Fail','미실행'];
@@ -211,7 +240,7 @@ function renderRep(){
   [['전체 TC',tot,''],['Pass',n('Pass'),'var(--pass)'],['Fail',n('Fail'),'var(--fail)'],['미실행',n('미실행'),'var(--skip)'],['합격률(실행 기준)',run?Math.round(n('Pass')/run*100)+'%':'-',''],['결함',DEF.length+'건','']].forEach(([l,v,c])=>{
     const d=el('div','card');d.append(el('small',0,l));const b=el('b',0,v);if(c)b.style.color=c;d.append(b);cards.append(d)});
   const bars=$('#bars');bars.textContent='';
-  [['고객','기능'],['고객','UI/UX'],['고객','보안'],['관리자','기능'],['관리자','UI/UX']].forEach(([a,t])=>{
+  [['고객','기능'],['고객','UI/UX'],['고객','보안'],['관리자','기능'],['관리자','보안'],['관리자','UI/UX']].forEach(([a,t])=>{
     const g=rows.filter(r=>r.area===a&&r.type===t);if(!g.length)return;
     const row=el('div','bar');row.append(el('span',0,`${a} · ${t}`));
     const tr=el('div','track');ST.forEach(s=>{const c=g.filter(r=>r.st===s).length;if(!c)return;const i=el('i');i.style.width=c/g.length*100+'%';i.style.background=s==='Pass'?'var(--pass)':s==='Fail'?'var(--fail)':'var(--skip)';i.title=`${s} ${c}`;tr.append(i)});
@@ -221,10 +250,10 @@ function renderRep(){
    '핵심 기능(FAQ·재고·주문 조회·추천·상담 기록, 관리자 수정의 실시간 반영, 로그인·권한)은 기대대로 동작했다.',
    `Fail ${n('Fail')}건은 모두 Medium 이하이며, 우선 고칠 것은 D-01(주문 데이터 공개 읽기)과 D-02(관리자 입력 검증).`,
    '나머지는 모바일 버튼 줄바꿈·입력창 문구 잘림·문구 정리 같은 UI/문구 수정이다.',
-   `미실행 ${n('미실행')}건은 두 번째 Google 계정, AI 연결 테스트 버튼·키 저장, 샘플 되돌리기, 주문·배송 편집이다. 다음 회차에 이어서 진행한다.`].forEach(t=>sum.append(el('li',0,t)));
+   `미실행 ${n('미실행')}건은 두 번째 Google 계정(AF-04, AF-23), AI 연결 테스트 버튼·키 저장, 샘플 되돌리기, 주문·배송 편집, 피드백 지침을 AI가 실제로 따르는지(FB-07)이다. 다음 회차에 이어서 진행한다.`].forEach(t=>sum.append(el('li',0,t)));
 }
 function renderDef(){
-  const box=$('#def');box.textContent='';
+  const box=$('#def');box.textContent='';box.append(el('h2','ph','3. 결함 목록'));
   DEF.forEach(d=>{const c=el('div','defect '+d[1]);c.append(el('h3',0,`${d[0]} · ${d[3]}`));
     const l=el('dl');[['심각도',d[1]],['구분',d[2]],['관련 TC',d[4]],['현상',d[5]],['개선 제안',d[6]]].forEach(([k,v])=>{l.append(el('dt',0,k),el('dd',0,v))});c.append(l);box.append(c)});
 }
