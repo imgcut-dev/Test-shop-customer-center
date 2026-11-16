@@ -316,7 +316,8 @@ const hist=[];let busy=false,pending=null,tries=0;
 const bottom=()=>{log.scrollTop=log.scrollHeight};
 let lastBot='';
 function add(role,text){if(role==='bot'&&text)lastBot=text;const d=mk('div','m '+role,text);log.append(d);bottom();return d}
-const chipBtn=x=>{const b=mk('button',null,x);b.type='button';b.onclick=()=>send(x);return b};
+const CHIP_ID={};
+const chipBtn=x=>{const b=mk('button',null,x);b.type='button';b.onclick=()=>send(x,CHIP_ID[x]);return b};
 function setChips(l){chips.textContent='';
   if(l.length&&typeof l[0]==='object')l.forEach(g=>{const r=mk('div','grp');r.append(mk('span','gl',g.label));g.items.forEach(x=>r.append(chipBtn(x)));chips.append(r)});
   else l.forEach(x=>chips.append(chipBtn(x)));
@@ -366,6 +367,7 @@ function matchProducts(msg){
   return out.slice(0,4);
 }
 function fast(msg){ // AI 없이 바로 답하면 true
+  if(forceId&&D.products[forceId]){const id=forceId;forceId=null;add('bot','찾아봤어요! 🐾');productCard(id);return true}
   if(meta(msg)){metaFlag=true;return true}
   const oid=normOrder(msg);
   if(oid){
@@ -401,7 +403,8 @@ function fast(msg){ // AI 없이 바로 답하면 true
   }
   if(/재고|가격|얼마|남았|품절|입고|있나요|있어요/.test(msg)){
     const ids=matchProducts(msg);
-    if(ids.length){add('bot',ids.length>1?'이런 상품들이 있어요! 🐾':'찾아봤어요! 🐾');ids.forEach(productCard);return true}
+    if(ids.length>1){metaFlag=true;add('bot','비슷한 상품이 여러 개예요. 어떤 상품인지 골라 주세요.');nextChips=ids.map(i=>{const l=D.products[i].name;CHIP_ID[l]=i;return l});return true}
+    if(ids.length){add('bot','찾아봤어요! 🐾');ids.forEach(productCard);return true}
   }
   return false;
 }
@@ -505,8 +508,9 @@ function addRate(en){
   up.onclick=()=>pick('up');dn.onclick=()=>pick('down');
   d.append(msg,up,dn);log.append(d);bottom();
 }
-async function send(text){
-  text=text.trim();if(!text||busy)return;
+let forceId=null;
+async function send(text,pid){
+  text=text.trim();forceId=pid||null;if(!text||busy)return;
   if(text===HOME){home();return}busy=true;metaFlag=false;nextChips=null;btn.disabled=true;chips.hidden=true;t.value='';t.style.height='auto';
   add('user',text);atHome=false;lastKind=null;sums=[];lastBot='';const t0=Date.now();let entry=null;
   try{
@@ -956,7 +960,7 @@ function renderFront(){ // 왼쪽 오늘의 핫딜: 재고 있는 상품 중 할
     const t=mk('button','row');t.type='button';
     const info=mk('div','ri');info.append(mk('div','tn',shortName(p)),mk('div','tp',won(p.salePrice)));
     t.append(mk('span','ic2',EMO[p.category]||'🐾'),info,mk('span','tag',rate+'%'));
-    t.onclick=()=>send(`${shortName(p)} 재고 있나요?`);
+    t.onclick=()=>send(`${shortName(p)} 재고 있나요?`,id);
     box.append(t);
   });
   f.append(box);
