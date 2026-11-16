@@ -1,0 +1,8 @@
+{
+  "name": "kkomarket-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "꼬순내 마켓 AI 상담 챗봇 (로컬 실행)",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
