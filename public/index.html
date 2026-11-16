@@ -272,7 +272,7 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
     const key=getKey();let res;
     try{
       res=key
-        ?await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:MODELS[opts.modelTier||'quick']||MODELS.quick,max_tokens:700,stream:true,messages})})
+        ?await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:MODELS[opts.modelTier||'quick']||MODELS.quick,max_tokens:700,thinking:{type:'disabled'},stream:true,messages})})
         :await fetch('/api/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages,tier:opts.modelTier||'quick'})});
     }
     catch(e){throw {code:'network',message:key?'Anthropic에 연결할 수 없어요. 인터넷 연결을 확인해 주세요.':'AI 서버에 연결할 수 없어요. 관리자 > 챗봇 설정 > AI 연결에서 API 키를 입력해 주세요.'}}
@@ -517,7 +517,7 @@ async function send(text){
     let h=hist.slice(-Math.max(2,Number(AG().historyN)||8));while(h.length&&h[0].role!=='user')h.shift();
     const msgs=h.map((m,i)=>i===0?{role:'user',content:buildPrompt(m.content)}:m);
     const r=await sample(msgs,{cache:false,modelTier:AG().tier||'quick',onText:({text})=>{b.classList.remove('dots');b.textContent=text;bottom()}});
-    b.classList.remove('dots');b.textContent=r.text;bottom();hist.push({role:'assistant',content:r.text});entry=logChat(text,r.text,'ai',Date.now()-t0);
+    b.classList.remove('dots');if(!r.text.trim())throw {message:'앗, 답변을 만들지 못했어요. 다시 한 번 물어봐 주세요.'};b.textContent=r.text;bottom();hist.push({role:'assistant',content:r.text});entry=logChat(text,r.text,'ai',Date.now()-t0);
   }catch(e){
     if(hist.length&&hist[hist.length-1].role==='user')hist.pop();
     logChat(text,(e&&e.message)||(e&&e.code)||'오류','error',Date.now()-t0);

@@ -45,7 +45,7 @@ async function ask(req, res) {
     up = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model, max_tokens: 700, stream: true, messages: msgs }),
+      body: JSON.stringify({ model, max_tokens: 700, thinking: { type: 'disabled' }, stream: true, messages: msgs }),
     });
   } catch { return json(res, 502, { message: 'Anthropic 서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.' }); }
   if (!up.ok) {
