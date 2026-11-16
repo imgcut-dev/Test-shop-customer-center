@@ -964,11 +964,11 @@ const EMO={사료:'🥣',간식:'🦴',영양제:'💊'},CCLS={사료:'a',간식
 function renderTest(){ // 오른쪽 배송 테스트용 정보: 접혀 있다가 누르면 펼쳐짐. 가상 주문(누르면 주문번호가 입력됨)
   const f=$('testbox'),was=f.querySelector('details'),open=!!(was&&was.open);f.textContent='';
   const box=mk('details','hot');box.open=open;box.append(mk('summary',null,'배송 테스트용 정보'),mk('p','note','가상 데이터예요. 주문번호를 누르고, 보리가 물으면 아래 뒤 4자리를 입력해 보세요.'));
-  const list=Object.entries(D.orders).sort((a,b)=>a[0].localeCompare(b[0])).slice(0,1);
+  const list=['ORD-1006','ORD-1008','ORD-1003'].filter(i=>D.orders[i]).map(i=>[i,D.orders[i]]); // 배송완료·배송중·배송 전 테스트용
   if(!list.length)box.append(mk('span','note','불러오는 중이에요…'));
   list.forEach(([id,o])=>{
     const t=mk('button','row');t.type='button';const info=mk('div','ri');
-    info.append(mk('div','tn',id+' · '+o.customer),mk('div','tp',(o.status||'-')+' · 뒤 4자리 '+o.phone4));
+    info.append(mk('div','tn',id+' · '+o.customer),mk('div','tp',((D.deliveries[id]||{}).status||o.status||'-')+' · 뒤 4자리 '+o.phone4));
     t.append(info);t.onclick=()=>send(id);box.append(t);
   });
   f.append(box);
