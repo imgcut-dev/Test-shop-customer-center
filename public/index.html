@@ -32,7 +32,7 @@ body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--font);padding-inli
 .m.user{background:var(--accent);color:var(--accent-fg);border-bottom-right-radius:4px;align-self:flex-end}
 .m.err{color:var(--warn)}
 .info{align-self:flex-start;max-width:92%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;background:var(--panel);display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
-.info dt{color:var(--mute)}.info dd{margin:0;overflow-wrap:anywhere}
+.info a{grid-column:1/-1;margin-top:6px;color:var(--tintfg);font-weight:600;text-decoration:none}.info dt{color:var(--mute)}.info dd{margin:0;overflow-wrap:anywhere}
 .info h3{grid-column:1/-1;margin:0 0 4px;font-size:14px}
 .tag{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:0 8px;background:var(--bot);color:var(--accent)}
 .tag.no{color:var(--warn)}
@@ -229,6 +229,7 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
 </div>
 
 <script>window.__SEED__={"products/P001": {"name": "[추가증정] 그레인프리 스몰브리드 어덜트 사료 5.4kg+160g", "category": "사료", "price": 99000, "salePrice": 61960, "note": "첫구매 혜택가 · 쿠폰 11,000원 적용"}, "products/P002": {"name": "[체험팩] 헬씨트릿 글루코사민 20g", "category": "간식", "price": 3500, "salePrice": 945, "note": "유통기한 임박 (27.02.24)"}, "products/P003": {"name": "프리미엄 덕 프리런 사료 11.4kg", "category": "사료", "price": 168000, "salePrice": 123370, "note": "창고대방출"}, "products/P004": {"name": "독 데일리 눈·눈물 케어 트릿 180g (2g×90ea)", "category": "영양제", "price": 20000, "salePrice": 5792, "note": "유통기한 임박 (26.12.13)"}, "products/P005": {"name": "수제 사시미 육포 1kg (6종 모음)", "category": "간식", "price": 21900, "salePrice": 15330, "note": "신상특가 · 30% 쿠폰 적용"}, "products/P006": {"name": "칠면조 아킬레스 L 90g", "category": "간식", "price": 23000, "salePrice": 9210, "note": "유통기한 임박 (26.12.11)"}, "products/P007": {"name": "동결건조 북어 트릿 140g", "category": "간식", "price": 15900, "salePrice": 10100, "note": "창고대방출"}, "products/P008": {"name": "치킨 큐브 300g", "category": "간식", "price": 6900, "salePrice": 3380, "note": "유통기한 임박 (26.12.05)"}, "products/P009": {"name": "오리지널 독 사료 6kg", "category": "사료", "price": 108000, "salePrice": 81910, "note": "창고대방출"}, "products/P010": {"name": "[무료배송] 기관지 영양제 100정", "category": "영양제", "price": 51500, "salePrice": 14280, "note": "신상특가 · 15% 쿠폰 적용"}, "stock/P001": {"qty": 24, "restock": ""}, "stock/P002": {"qty": 3, "restock": "2026-12-01"}, "stock/P003": {"qty": 7, "restock": ""}, "stock/P004": {"qty": 0, "restock": "2026-12-05"}, "stock/P005": {"qty": 58, "restock": ""}, "stock/P006": {"qty": 12, "restock": ""}, "stock/P007": {"qty": 0, "restock": "2026-12-10"}, "stock/P008": {"qty": 140, "restock": ""}, "stock/P009": {"qty": 31, "restock": ""}, "stock/P010": {"qty": 5, "restock": ""}, "orders/ORD-1001": {"customer": "김하나", "phone4": "1234", "productId": "P001", "qty": 1, "amount": 61960, "status": "배송중", "orderedAt": "2026-11-12"}, "orders/ORD-1002": {"customer": "이도윤", "phone4": "5678", "productId": "P003", "qty": 1, "amount": 123370, "status": "배송완료", "orderedAt": "2026-11-08"}, "orders/ORD-1003": {"customer": "박서연", "phone4": "9012", "productId": "P005", "qty": 2, "amount": 30660, "status": "상품준비중", "orderedAt": "2026-11-15"}, "orders/ORD-1004": {"customer": "최민준", "phone4": "3456", "productId": "P008", "qty": 3, "amount": 10140, "status": "배송중", "orderedAt": "2026-11-13"}, "orders/ORD-1005": {"customer": "정지우", "phone4": "7788", "productId": "P009", "qty": 1, "amount": 81910, "status": "결제완료", "orderedAt": "2026-11-16"}, "orders/ORD-1006": {"customer": "한예린", "phone4": "2468", "productId": "P002", "qty": 5, "amount": 4725, "status": "배송완료", "orderedAt": "2026-11-05"}, "orders/ORD-1007": {"customer": "오세훈", "phone4": "1357", "productId": "P010", "qty": 1, "amount": 14280, "status": "취소", "orderedAt": "2026-11-14"}, "orders/ORD-1008": {"customer": "윤지아", "phone4": "8642", "productId": "P006", "qty": 2, "amount": 18420, "status": "배송중", "orderedAt": "2026-11-14"}, "orders/ORD-1009": {"customer": "강태오", "phone4": "9753", "productId": "P004", "qty": 1, "amount": 5792, "status": "상품준비중", "orderedAt": "2026-11-15"}, "orders/ORD-1010": {"customer": "송다은", "phone4": "1122", "productId": "P007", "qty": 1, "amount": 10100, "status": "배송완료", "orderedAt": "2026-11-03"}, "deliveries/ORD-1001": {"carrier": "가상택배", "tracking": "8100000001", "status": "배송중", "location": "서울 강남 터미널", "eta": "2026-11-17"}, "deliveries/ORD-1002": {"carrier": "가상택배", "tracking": "8100000002", "status": "배송완료", "location": "수령 완료 (문 앞)", "eta": "2026-11-10"}, "deliveries/ORD-1003": {"carrier": "", "tracking": "", "status": "배송 전", "location": "상품 포장 중", "eta": "2026-11-18"}, "deliveries/ORD-1004": {"carrier": "가상택배", "tracking": "8100000004", "status": "배송중", "location": "경기 성남 허브", "eta": "2026-11-17"}, "deliveries/ORD-1005": {"carrier": "", "tracking": "", "status": "배송 전", "location": "결제 확인 중", "eta": "2026-11-19"}, "deliveries/ORD-1006": {"carrier": "가상택배", "tracking": "8100000006", "status": "배송완료", "location": "수령 완료 (경비실)", "eta": "2026-11-07"}, "deliveries/ORD-1007": {"carrier": "", "tracking": "", "status": "취소", "location": "주문 취소됨", "eta": "-"}, "deliveries/ORD-1008": {"carrier": "가상택배", "tracking": "8100000008", "status": "배송중", "location": "서울 송파 영업소", "eta": "2026-11-17"}, "deliveries/ORD-1009": {"carrier": "", "tracking": "", "status": "배송 전", "location": "상품 포장 중", "eta": "2026-11-18"}, "deliveries/ORD-1010": {"carrier": "가상택배", "tracking": "8100000010", "status": "배송완료", "location": "수령 완료 (본인)", "eta": "2026-11-06"}, "faq/F001": {"category": "배송", "q": "배송비는 얼마인가요?", "a": "배송비는 3,000원이며, 30,000원 이상 구매하시면 무료예요.", "keywords": "배송비,배송료,택배비", "enabled": "Y"}, "faq/F002": {"category": "배송", "q": "배송은 얼마나 걸리나요?", "a": "결제 확인 후 1~2영업일 안에 출고되고, 출고 후 1~2일 안에 도착해요. 정확한 현황은 주문번호로 조회할 수 있어요.", "keywords": "얼마나걸,며칠,언제도착,배송기간", "enabled": "Y"}, "faq/F003": {"category": "배송", "q": "배송이 늦어지면 어떻게 하나요?", "a": "도착예정일이 지났다면 주문번호로 배송 현황을 먼저 확인해 주세요. 위치가 멈춰 있으면 고객센터(평일 10:00~17:00)로 문의해 주시면 택배사에 확인해 드려요.", "keywords": "늦어,지연,안와", "enabled": "Y"}, "faq/F004": {"category": "교환·환불", "q": "교환/환불은 어떻게 하나요?", "a": "상품 수령 후 7일 이내에 마이페이지 > 주문내역에서 교환·환불을 신청할 수 있어요. 단순 변심은 왕복 배송비가 부과되고, 개봉한 사료·간식은 교환·환불이 어려울 수 있어요.", "keywords": "교환,환불,반품", "enabled": "Y"}, "faq/F005": {"category": "주문", "q": "주문을 취소하고 싶어요", "a": "상품준비중 단계까지는 마이페이지 > 주문내역에서 바로 취소할 수 있어요. 이미 배송중이면 수령 후 반품으로 진행해 주세요.", "keywords": "주문취소,취소하고,취소할,취소해", "enabled": "Y"}, "faq/F006": {"category": "고객센터", "q": "고객센터 운영시간이 어떻게 되나요?", "a": "평일 10:00~17:00(점심 12:00~13:00, 주말·공휴일 휴무)에 운영해요.", "keywords": "운영시간,상담시간,몇시까지,전화번호", "enabled": "Y"}, "faq/F007": {"category": "혜택", "q": "쿠폰이 적용이 안 돼요", "a": "쿠폰은 사용 조건(최소 주문금액, 대상 상품)에 맞아야 적용돼요. 조건을 확인해도 안 되면 주문서 화면 캡처와 함께 문의해 주세요.", "keywords": "쿠폰", "enabled": "Y"}, "faq/F008": {"category": "혜택", "q": "적립금은 언제 들어오나요?", "a": "구매확정 후 다음 영업일에 적립돼요.", "keywords": "적립금,적립", "enabled": "Y"}};</script>
+<script src="ing.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -298,7 +299,7 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
 
 const SHEET_URL="https://docs.google.com/spreadsheets/d/1dIoLTUifHo8CHsgWjeUBHLaKPpFjD6RQ_6-YN155wSg/edit";
 const COLS={
- products:{label:'상품',cols:[['name','상품명','nm'],['category','카테고리'],['price','정가','num'],['salePrice','판매가','num'],['note','비고']]},
+ products:{label:'상품',cols:[['name','상품명','nm'],['category','카테고리'],['price','정가','num'],['salePrice','판매가','num'],['note','비고'],['ingredients','성분(비우면 자동)']]},
  stock:{label:'재고',cols:[['qty','재고수량','num'],['restock','입고예정일']]},
  orders:{label:'주문',cols:[['customer','주문자'],['phone4','휴대폰뒤4자리'],['productId','상품ID'],['qty','수량','num'],['amount','금액','num'],['status','주문상태'],['orderedAt','주문일']]},
  deliveries:{label:'배송',cols:[['carrier','택배사'],['tracking','운송장번호'],['status','배송상태'],['location','현재위치'],['eta','도착예정일']]},
@@ -344,8 +345,9 @@ function productCard(id){
   const p=D.products[id];sums.push(`${shortName(p)}: ${won(p.salePrice)}, ${stockText(id)}`);
   const c=mk('dl','info');c.append(mk('h3',null,p.name));
   const q=Number((D.stock[id]||{}).qty);
-  const rows=[['가격',`${won(p.salePrice)} (정가 ${won(p.price)}, ${p.price?Math.round((1-p.salePrice/p.price)*100):0}% 할인)`],['재고',stockText(id)],['비고',p.note||'-']];
+  const rows=[['가격',`${won(p.salePrice)} (정가 ${won(p.price)}, ${p.price?Math.round((1-p.salePrice/p.price)*100):0}% 할인)`],['재고',stockText(id)],['성분',ingText(p)],['비고',p.note||'-']];
   rows.forEach(([k,v])=>{c.append(mk('dt',null,k));const d=mk('dd');if(k==='재고'){d.append(mk('span','tag'+(q>0?'':' no'),v))}else d.textContent=v;c.append(d)});
+  const a=mk('a',null,'상품 페이지 보기 ↗');a.href='product.html?id='+id;a.target='_blank';a.rel='noopener';c.append(a);
   log.append(c);bottom();
 }
 function orderCard(oid){
@@ -478,7 +480,7 @@ function shipEstimate(now=new Date()){
   const range=from.getTime()===to.getTime()?f(from):f(from)+'~'+f(to);
   return {ship:f(ship),range,text:`지금 주문하시면 ${f(ship)}에 출고되어 ${range}에 도착할 예정이에요 📦 (평일 ${a.shipCutoff}시 이전 결제 기준, 주말·공휴일 제외, 지역과 택배 상황에 따라 달라질 수 있어요)`};
 }
-function buildPrompt(m){const a=AG(),e=shipEstimate();return a.instructions+'\n말투: '+a.tone+'\n\n[배송 안내 기준]\n지금 주문하면 '+e.ship+' 출고, 도착 예상 '+e.range+' (평일 '+a.shipCutoff+'시 이전 결제 기준, 주말·공휴일 제외). 고객이 예상 배송일을 물으면 이 내용으로 답하세요.\n\n[FAQ·정책 정보]\n'+(faqText()||'(없음)')+'\n\n[상품 데이터]\n'+catalog()+(guideText()?'\n\n[관리자 피드백 지침 — 반드시 따르세요]\n'+guideText():'')+'\n\n[고객 메시지]\n'+m}
+function buildPrompt(m){const a=AG(),e=shipEstimate();return a.instructions+'\n말투: '+a.tone+'\n\n[배송 안내 기준]\n지금 주문하면 '+e.ship+' 출고, 도착 예상 '+e.range+' (평일 '+a.shipCutoff+'시 이전 결제 기준, 주말·공휴일 제외). 고객이 예상 배송일을 물으면 이 내용으로 답하세요.\n\n[FAQ·정책 정보]\n'+(faqText()||'(없음)')+'\n\n[상품 데이터]\n'+catalog()+(guideText()?'\n\n[관리자 피드백 지침 — 반드시 따르세요]\n'+guideText():'')+'\n\n[상품 추천 규칙]\n상품을 추천하거나 소개할 때는 본문에 가격·재고·성분을 반복해 적지 말고 1~2문장으로만 말한 뒤, 답변 맨 마지막 줄에 [추천: 상품ID,상품ID] 형식으로 상품 데이터에 있는 ID를 최대 3개 적으세요. 화면이 상품 카드로 자세한 정보를 보여줍니다.\n\n[고객 메시지]\n'+m+'\n\n(상품을 추천·소개했다면 답변 맨 마지막 줄에 반드시 [추천: ID,ID] 를 붙이세요. 예: [추천: P011,P052])'}
 function faqMatch(msg){
   const m=msg.replace(/\s+/g,'');let best=null,bs=0;
   for(const f of faqList()){const sc=String(f.keywords||'').split(/[,，]/).map(x=>x.replace(/\s+/g,'')).filter(Boolean).filter(k=>m.includes(k)).length;if(sc>bs){bs=sc;best=f}}
@@ -509,6 +511,9 @@ function addRate(en){
   d.append(msg,up,dn);log.append(d);bottom();
 }
 let forceId=null;
+const cleanRec=t=>t.replace(/\s*\[추천[^\]]*(\]|$)/g,'').trim();
+const recIds=t=>{const m=t.match(/\[추천:?\s*([^\]]*)\]/);return m?[...new Set(m[1].split(/[,\s]+/).filter(i=>D.products[i]&&Number((D.stock[i]||{}).qty)>0))].slice(0,3):[]};
+const mentioned=t=>{const by={};Object.entries(D.products).forEach(([i,p])=>{const n=shortName(p);if(n.length>=4&&t.includes(n)&&Number((D.stock[i]||{}).qty)>0)(by[n]=by[n]||[]).push(i)});return Object.values(by).filter(a=>a.length===1).map(a=>a[0]).slice(0,3)}; // ponytail: 이름이 겹치면(여러 규격) 건너뜀
 async function send(text,pid){
   text=text.trim();forceId=pid||null;if(!text||busy)return;
   if(text===HOME){home();return}busy=true;metaFlag=false;nextChips=null;btn.disabled=true;chips.hidden=true;t.value='';t.style.height='auto';
@@ -520,8 +525,9 @@ async function send(text,pid){
     if(!sample)throw {message:'앗, 지금은 AI 상담을 쓸 수 없어요. 주문번호 조회와 재고 문의는 바로 도와드릴 수 있어요!'};
     let h=hist.slice(-Math.max(2,Number(AG().historyN)||8));while(h.length&&h[0].role!=='user')h.shift();
     const msgs=h.map((m,i)=>i===0?{role:'user',content:buildPrompt(m.content)}:m);
-    const r=await sample(msgs,{cache:false,modelTier:AG().tier||'quick',onText:({text})=>{b.classList.remove('dots');b.textContent=text;bottom()}});
-    b.classList.remove('dots');if(!r.text.trim())throw {message:'앗, 답변을 만들지 못했어요. 다시 한 번 물어봐 주세요.'};b.textContent=r.text;bottom();hist.push({role:'assistant',content:r.text});entry=logChat(text,r.text,'ai',Date.now()-t0);
+    const r=await sample(msgs,{cache:false,modelTier:AG().tier||'quick',onText:({text})=>{b.classList.remove('dots');b.textContent=cleanRec(text);bottom()}});
+    const shown=cleanRec(r.text);if(!shown.trim())throw {message:'앗, 답변을 만들지 못했어요. 다시 한 번 물어봐 주세요.'};b.classList.remove('dots');b.textContent=shown;bottom();hist.push({role:'assistant',content:r.text});entry=logChat(text,shown,'ai',Date.now()-t0);
+    (recIds(r.text).length?recIds(r.text):mentioned(shown)).forEach(productCard);
   }catch(e){
     if(hist.length&&hist[hist.length-1].role==='user')hist.pop();
     logChat(text,(e&&e.message)||(e&&e.code)||'오류','error',Date.now()-t0);

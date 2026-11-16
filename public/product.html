@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>상품 정보 · 꼬순내 마켓</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{--bg:#f2f4f6;--panel:#fff;--fg:#191f28;--mute:#6b7684;--line:#e5e8eb;--accent:#3182f6;--tint:#e8f3ff;--tintfg:#1b64da;--warn:#f04452}
+@media (prefers-color-scheme:dark){:root{--bg:#101013;--panel:#17171c;--fg:#f9fafb;--mute:#8b95a1;--line:#2c2c35;--accent:#4593fc;--tint:#1c3050;--tintfg:#6ea8fe;--warn:#ff6b7a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;padding:16px}
+.w{max-width:560px;margin:0 auto}
+.c{background:var(--panel);border-radius:24px;padding:24px}
+.ph{height:160px;border-radius:18px;background:var(--bg);display:grid;place-items:center;font-size:56px;margin-bottom:16px}
+h1{font-size:22px;margin:8px 0 4px}
+.tag{display:inline-block;border-radius:6px;background:var(--tint);color:var(--tintfg);padding:2px 8px;font-size:13px;font-weight:600}.tag.no{background:rgba(240,68,82,.12);color:var(--warn)}
+.pr{font-size:26px;font-weight:700;margin:8px 0}.pr s{font-size:15px;color:var(--mute);font-weight:400;margin-left:8px}.pr .r{color:var(--warn);margin-right:6px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;margin:16px 0}dt{color:var(--mute)}dd{margin:0}
+a.b{display:block;text-align:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;border-radius:14px;padding:14px;min-height:20px}
+.n{color:var(--mute);font-size:13px;margin-top:12px;text-align:center}
+</style></head><body><div class="w"><div class="c" id="c">불러오는 중…</div></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="ing.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyDpRb5sLKFcrphR8Xja75_6lGOYigtlLg0",authDomain:"test-shop-customer-center.firebaseapp.com",projectId:"test-shop-customer-center",storageBucket:"test-shop-customer-center.firebasestorage.app",messagingSenderId:"972433891288",appId:"1:972433891288:web:14892b14c37418539b1cad"});
+const db=firebase.firestore(),id=new URLSearchParams(location.search).get('id')||'',c=document.getElementById('c'),won=n=>Number(n||0).toLocaleString('ko-KR')+'원',EMO={사료:'🥣',간식:'🦴',영양제:'💊'};
+const mk=(t,x,cl)=>{const e=document.createElement(t);if(x!=null)e.textContent=x;if(cl)e.className=cl;return e};
+(async()=>{
+  try{
+    const [p,s]=await Promise.all([db.doc('products/'+id).get(),db.doc('stock/'+id).get()]);
+    if(!p.exists){c.textContent='상품을 찾을 수 없어요.';return}
+    const d=p.data(),q=s.exists?Number(s.data().qty):null,rate=d.price?Math.round((1-d.salePrice/d.price)*100):0;
+    document.title=d.name+' · 꼬순내 마켓';c.textContent='';
+    const pr=mk('div',null,'pr');if(rate>0)pr.append(mk('span',rate+'%','r'));pr.append(document.createTextNode(won(d.salePrice)));if(rate>0)pr.append(mk('s',won(d.price)));
+    const dl=mk('dl'),row=(k,v)=>{dl.append(mk('dt',k));const e=mk('dd');if(v instanceof Node)e.append(v);else e.textContent=v;dl.append(e)};
+    row('분류',d.category||'-');
+    row('재고',mk('span',q==null?'정보 없음':q<=0?'품절'+(s.data().restock?' · 입고예정 '+s.data().restock:''):'재고 '+q+'개'+(q<=5?' (소량 남음)':''),'tag'+(q>0?'':' no')));
+    row('성분',window.ingText(d));row('비고',d.note||'-');row('상품 번호',id);
+    const back=mk('a','대화로 돌아가기','b');back.href='./';
+    c.append(mk('div',EMO[d.category]||'🐾','ph'),mk('span',d.category||'','tag'),mk('h1',d.name),pr,dl,back,mk('div','가상의 상품 페이지예요. 실제 판매 상품이 아니에요.','n'));
+  }catch(e){c.textContent='상품 정보를 불러오지 못했어요.'}
+})();
+</script></body></html>
