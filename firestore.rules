@@ -1,0 +1,7 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 과제 실습용: 누구나 읽고 쓸 수 있음 (운영 시 반드시 제한)
+    match /{document=**} { allow read, write: if true; }
+  }
+}
