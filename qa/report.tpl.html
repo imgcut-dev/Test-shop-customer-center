@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>꼬순내 마켓 QA 테스트 TC·보고서</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--fg:#1b2430;--mute:#677384;--line:#dde2e9;--acc:#e8751a;--pass:#1a8a52;--fail:#c8372d;--skip:#8a6d0b;--info:#2563b8;--passbg:#e5f5ec;--failbg:#fbe9e7;--skipbg:#fbf3d9;--infobg:#e6eefb;--head:#eef1f5}
+@media (prefers-color-scheme:dark){:root{--bg:#14171c;--panel:#1c2027;--fg:#e8ecf1;--mute:#98a3b3;--line:#2d343f;--acc:#ff9a45;--pass:#4cc88a;--fail:#ff7d72;--skip:#e0b94a;--info:#7db0ff;--passbg:#173326;--failbg:#3b1d1a;--skipbg:#3a3114;--infobg:#1b2a44;--head:#232830}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif}
+header{padding:20px 24px 0;max-width:1400px;margin:0 auto}
+h1{margin:0 0 4px;font-size:22px}
+.meta{color:var(--mute);font-size:13px}
+.rounds{display:flex;gap:8px;max-width:1400px;margin:16px auto 0;padding:0 24px}
+.rounds button{font:inherit;font-weight:700;font-size:15px;background:var(--panel);color:var(--mute);border:1px solid var(--line);border-radius:10px 10px 0 0;padding:10px 22px;cursor:pointer;border-bottom:0}
+.rounds button[aria-selected=true]{color:#fff;background:var(--acc);border-color:var(--acc)}
+.rounds button small{font-weight:400;opacity:.85;margin-left:6px}
+.rbar{max-width:1400px;margin:0 auto;border-top:3px solid var(--acc)}
+.sub{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--line);max-width:1400px;margin:0 auto}
+.sub button{font:inherit;font-weight:600;background:none;color:var(--mute);border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer}
+.sub button[aria-selected=true]{color:var(--acc);border-bottom-color:var(--acc)}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{max-width:1400px;margin:0 auto;padding:20px 24px 60px}
+.round[hidden],.rsec[hidden]{display:none}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+select,input[type=search]{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg)}
+input[type=search]{min-width:220px}
+.btn{font:inherit;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;text-decoration:none;display:inline-block}
+.cnt{margin-left:auto;color:var(--mute);font-size:13px}
+.wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);max-height:72vh}
+table{border-collapse:collapse;width:100%;min-width:1100px}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th:last-child,td:last-child{border-right:0}
+thead th{position:sticky;top:0;background:var(--head);font-size:12px;white-space:nowrap;z-index:1}
+tbody tr:hover{background:var(--head)}
+td.id{white-space:nowrap;font-weight:600}
+tbody td:nth-child(2),tbody td:nth-child(3){white-space:nowrap}
+.badge{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.Pass,.개선{background:var(--passbg);color:var(--pass)}.Fail,.악화{background:var(--failbg);color:var(--fail)}.미실행{background:var(--skipbg);color:var(--skip)}.신규,.신규실행{background:var(--infobg);color:var(--info)}.동일,.없음{background:var(--head);color:var(--mute)}
+.sev{font-size:12px;font-weight:700}.sev.High,.sev.Medium{color:var(--fail)}.sev.Low{color:var(--skip)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card small{color:var(--mute);display:block}.card b{font-size:28px;line-height:1.2}.card i{font-style:normal;font-size:12px;color:var(--mute);display:block}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px;margin-bottom:20px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.box h2,.box h3{margin:0 0 10px;font-size:15px}
+.bar{display:grid;grid-template-columns:110px 1fr 120px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+.track{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--head)}
+.track i{display:block;height:100%}
+.legend{display:flex;gap:14px;color:var(--mute);font-size:12px;margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--c)}
+ul.l{margin:0;padding-left:18px}ul.l li{margin:4px 0}
+.cmp{width:100%;min-width:0}.cmp th,.cmp td{text-align:center;padding:6px 10px}.cmp td:first-child,.cmp th:first-child{text-align:left}
+.notice{background:var(--skipbg);border:1px solid var(--line);border-left:4px solid var(--skip);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px}
+.defect{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--skip);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.defect.Medium,.defect.High{border-left-color:var(--fail)}
+.defect h3{margin:0 0 6px;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.defect dl{display:grid;grid-template-columns:90px 1fr;gap:4px 12px;margin:8px 0 0}
+.defect dt{color:var(--mute);font-size:12px}.defect dd{margin:0}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.shots figure{margin:0}.shots img{width:100%;border:1px solid var(--line);border-radius:10px}.shots figcaption{font-size:12px;color:var(--mute);margin-top:4px}
+.ph{display:none}
+@page{size:A4 landscape;margin:10mm}
+body.print .rounds,body.print .sub,body.print .tools,body.print .pdfbtn{display:none!important}
+body.print .round,body.print .rsec{display:block!important}
+body.print .rbar{border-top:0}
+body.print .round+.round{break-before:page}
+body.print .rsec{break-before:page}
+body.print .rsec.first{break-before:auto}
+body.print .ph{display:block;font-size:16px;margin:0 0 8px}
+body.print .ph.rt{font-size:20px;color:var(--acc);margin-top:0}
+body.print{--bg:#fff;--panel:#fff;--fg:#111;--mute:#555;--line:#ccc;--head:#f1f1f1;font-size:11px}
+body.print .wrap{max-height:none;overflow:visible;border:0}
+body.print table{min-width:0;font-size:9.5px}body.print th,body.print td{padding:4px 6px}body.print thead th{position:static}body.print tr{break-inside:avoid}
+body.print .box,body.print .defect,body.print .card{break-inside:avoid}
+body.print .shots{grid-template-columns:repeat(3,1fr)}body.print .shots img{max-height:240px;object-fit:contain}
+@media (max-width:640px){header,main,.rounds,.sub{padding-left:14px;padding-right:14px}.bar{grid-template-columns:80px 1fr 90px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>꼬순내 마켓 · 고객 화면 / 관리자 화면 테스트</h1>
+  <div class="meta" id="meta"></div>
+  <p style="margin:8px 0 0"><a class="btn pdfbtn" href="test-report.pdf" download>PDF 다운로드 (1차+2차)</a></p>
+</header>
+<nav class="rounds" id="rounds" role="tablist" aria-label="테스트 회차"></nav>
+<div class="rbar"></div>
+<main id="root"></main>
+
+<script>
+const TC1=/*TC1*/[];
+const DEF1=/*DEF1*/[];
+const TC2=/*TC2*/[];
+const DEF2=/*DEF2*/[];
+const $=s=>document.querySelector(s);
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+const ST=['Pass','Fail','미실행'];
+const sk=s=>s==='신규 실행'?'신규실행':s;
+const row1=r=>({id:r[0],area:r[1],type:r[2],title:r[3],steps:r[4],exp:r[5],act:r[6],st:r[7],sev:r[8],bug:r[9]});
+const chg=(prev,st)=>prev==='신규'?'신규':prev===st?'동일':prev==='미실행'?'신규 실행':st==='미실행'?'미실행':prev==='Fail'&&st==='Pass'?'개선':'악화';
+const row2=r=>({...row1(r),prev:r[10],chg:chg(r[10],r[7])});
+const def=(d,s)=>({id:d[0],sev:d[1],cat:d[2],title:d[3],tc:d[4],desc:d[5],fix:d[6],state:s?d[7]:''});
+const ROUNDS=[
+ {n:1,label:'1차 테스트',date:'2026-11-16 · 오전',tc:TC1.map(row1),def:DEF1.map(d=>def(d,false)),
+  notice:'정정: 1차 TC AU-03·결함 D-08의 "3,000자가 그대로 표시"는 오기입니다. 상담 기록에는 질문이 200자까지만 저장됩니다(2차 보고서에서 정정).',
+  env:['대상: 고객 화면(#chat), 관리자 화면(#admin)','환경: 로컬 서버 localhost:3000 + 실제 Firebase(Firestore, Authentication)','브라우저: Chrome(관리자, 사용자 Google 로그인), 앱 내장 브라우저(고객), 화면폭 PC 1440 · 모바일 375','방법: 화면 조작과 스크립트로 입력·응답·저장값(Firestore)을 직접 비교','데이터: 가상 샘플(상품·재고·주문·배송 각 10건, FAQ 8건). 수정한 값은 모두 원복','제외: 다른 Google 계정, AI 연결 테스트 버튼·키 저장, 샘플 되돌리기, 주문·배송 편집 반영, 피드백 지침의 실제 AI 적용 (TC 결과 \'미실행\')'],
+  notes:['규칙 답변(FAQ·재고·주문조회·추천)은 평균 0초대로 즉시 응답, AI 응답은 약 1~2초','관리자 수정은 새로고침 없이 고객 화면에 실시간 반영','대시보드 KPI는 Firestore 원본 값과 일치','비로그인 상태에서 데이터 수정·상담 목록 조회는 차단, 단 주문 데이터 읽기는 열려 있음(D-01)','피드백 → AI 지침: 반영을 켜면 프롬프트에 [관리자 피드백 지침]이 붙고, 끄거나 삭제하면 사라짐'],
+  shots:[['screens/customer-pc.png','고객 화면 · PC 1440'],['screens/customer-mobile.png','고객 화면 · 모바일 375 ("처음으로" 줄바꿈, 입력창 안내문 잘림 · D-03, D-04)'],['screens/admin-chats.png','관리자 · 상담 내역 (긴 질문 표시 · D-08)']]},
+ {n:2,label:'2차 테스트',date:'2026-11-16 · 오후',tc:TC2.map(row2),def:DEF2.map(d=>def(d,true)),cmp:true,
+  env:['대상: 배포된 최종본 https://test-shop-customer-center.web.app (고객 #chat, 관리자 #admin)','환경: Chrome(관리자 로그인 상태). PC 1440×900, 모바일은 375px 프레임 측정 + 창 500px(Chrome 최소폭) 확인','범위: 1차 TC 66건 전부 재실행 + 신규 4건(고객 평가 화면, 비로그인 쓰기 범위) = 70건','AI: 사용자가 브라우저에 저장해 둔 API 키로 호출 (키 값은 조회·기록하지 않음)','데이터: 수정한 값은 모두 원복, 사용자 본인이 남긴 피드백 1건은 유지, 테스트 상담 기록은 남아 있음','제외: 다른 Google 계정(AF-04, AF-23), API 키 입력·삭제 동작'],
+  notes:['1차 미실행이던 4건(AI 연결 테스트, 샘플 되돌리기, 주문·배송 편집 반영, 피드백 지침의 AI 적용)을 실행해 모두 Pass','AI가 피드백 지침을 실제로 따름: 반영 켬 → 답변이 지정한 문구로 끝남 / 끔 → 끝나지 않음','결함 수정은 없었음: 1차 결함 10건 중 9건 그대로 재현, D-09만 일부 수정(상담 내역 문구)','신규 결함 3건: 작은 터치 대상(D-11), 상담 기록 쓰기 공개(D-12), 작은 화면에서 평가 줄 가림(D-13)','CU-07은 1차 Pass → 2차 Fail: 1차는 비로그인으로 점검했고 2차는 관리자 로그인 상태의 링크 높이(29px)까지 확인','CF-02 배송 예상일이 1차(11/16 출고)와 달라진 것은 14시 마감 이후라서이며 정상 동작'],
+  shots:[['screens/r2-customer-pc.png','고객 화면 · PC 1440 (답변마다 평가 줄 표시)'],['screens/r2-customer-mobile.png','고객 화면 · 모바일 폭 500 (평가 줄이 칩에 밀려 가려짐 · D-13)'],['screens/r2-admin-chats.png','관리자 · 상담 내역 (고객 평가 칸 + 관리자 피드백)']]}
+];
+$('#meta').textContent='테스트일 2026-11-16 · 대상 꼬순내 마켓 (test-shop-customer-center) · 수행 Claude (자동·수동 혼합)';
+const cntOf=(tc,k)=>tc.filter(r=>r.st===k).length;
+const rate=tc=>{const run=tc.length-cntOf(tc,'미실행');return run?Math.round(cntOf(tc,'Pass')/run*100):0};
+function badge(t,c){return el('span','badge '+(c||sk(t)),t)}
+
+function buildTC(R,sec){
+  const two=!!R.cmp;sec.append(el('h2','ph','1. 테스트 케이스 (TC)'));
+  const tools=el('div','tools');
+  const sel=(id,label,opts)=>{const s=el('select');s.id=id;s.setAttribute('aria-label',label);const o0=el('option',0,label+' 전체');o0.value='';s.append(o0);opts.forEach(x=>{const o=el('option',0,x);o.value=x;s.append(o)});return s};
+  const fA=sel('a','영역',['고객','관리자']),fT=sel('t','구분',['기능','UI/UX','보안']),fS=sel('s','결과',ST),fC=two?sel('c','변화',['동일','개선','악화','신규','신규 실행','미실행']):null;
+  const fQ=el('input');fQ.type='search';fQ.placeholder='TC ID·시나리오 검색';fQ.setAttribute('aria-label','검색');
+  const csv=el('button','btn','CSV 내보내기 (엑셀)');csv.type='button';const cnt=el('span','cnt');
+  tools.append(fA,fT,fS,...(fC?[fC]:[]),fQ,csv,cnt);sec.append(tools);
+  const wrap=el('div','wrap'),tb=el('table'),hr=el('tr');
+  const heads=['TC ID','영역','구분','시나리오','테스트 절차','기대 결과','실제 결과','결과','심각도','결함',...(two?['1차 결과','변화']:[])];
+  heads.forEach(h=>hr.append(el('th',0,h)));const th=el('thead');th.append(hr);tb.append(th);const body=el('tbody');tb.append(body);wrap.append(tb);sec.append(wrap);
+  const draw=()=>{
+    const q=fQ.value.trim().toLowerCase();
+    const list=R.tc.filter(r=>(!fA.value||r.area===fA.value)&&(!fT.value||r.type===fT.value)&&(!fS.value||r.st===fS.value)&&(!fC||!fC.value||r.chg===fC.value)&&(!q||(r.id+r.title+r.steps).toLowerCase().includes(q)));
+    body.textContent='';
+    list.forEach(r=>{const tr=el('tr');tr.append(el('td','id',r.id),el('td',0,r.area),el('td',0,r.type),el('td',0,r.title),el('td',0,r.steps),el('td',0,r.exp),el('td',0,r.act));
+      const c=el('td');c.append(badge(r.st));tr.append(c);const sv=el('td');if(r.sev)sv.append(el('span','sev '+r.sev,r.sev));tr.append(sv,el('td',0,r.bug));
+      if(two){const p=el('td');p.append(badge(r.prev,r.prev==='신규'?'신규':undefined));const g=el('td');g.append(badge(r.chg));tr.append(p,g)}
+      body.append(tr)});
+    cnt.textContent=`${list.length} / ${R.tc.length}건`;
+  };
+  [fA,fT,fS,fC].filter(Boolean).forEach(s=>s.onchange=draw);fQ.oninput=draw;
+  csv.onclick=()=>{const esc=v=>'"'+String(v).replace(/"/g,'""')+'"';
+    const rows=[heads,...R.tc.map(r=>[r.id,r.area,r.type,r.title,r.steps,r.exp,r.act,r.st,r.sev,r.bug,...(two?[r.prev,r.chg]:[])])];
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+rows.map(l=>l.map(esc).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));a.download=`kkomarket-test-cases-round${R.n}.csv`;a.click()};
+  draw();
+}
+
+function buildRep(R,sec){
+  sec.append(el('h2','ph','2. 결과 보고서'));
+  const tc=R.tc,tot=tc.length,P=cntOf(tc,'Pass'),F=cntOf(tc,'Fail'),S=cntOf(tc,'미실행');
+  if(R.notice)sec.append(el('div','notice',R.notice));
+  const cards=el('div','cards');
+  const prev=R.cmp?ROUNDS[0]:null;
+  [['전체 TC',tot,'',prev?`1차 ${prev.tc.length}건`:''],['Pass',P,'var(--pass)',prev?`1차 ${cntOf(prev.tc,'Pass')}건`:''],['Fail',F,'var(--fail)',prev?`1차 ${cntOf(prev.tc,'Fail')}건`:''],['미실행',S,'var(--skip)',prev?`1차 ${cntOf(prev.tc,'미실행')}건`:''],['합격률(실행 기준)',rate(tc)+'%','',prev?`1차 ${rate(prev.tc)}%`:''],['결함',R.def.length+'건','',prev?`1차 ${prev.def.length}건`:'']].forEach(([l,v,c,s])=>{
+    const d=el('div','card');d.append(el('small',0,l));const b=el('b',0,v);if(c)b.style.color=c;d.append(b);if(s)d.append(el('i',0,s));cards.append(d)});
+  sec.append(cards);
+  if(R.cmp){
+    const box=el('div','box');box.style.marginBottom='20px';box.append(el('h2',0,'1차 대비 변화'));
+    const t=el('table','cmp');const h=el('tr');['변화','건수','해당 TC'].forEach(x=>h.append(el('th',0,x)));const th=el('thead');th.append(h);t.append(th);const b=el('tbody');
+    [['개선','Fail → Pass'],['신규 실행','1차 미실행 → 2차 실행'],['동일','결과 변화 없음'],['악화','Pass → Fail'],['신규','2차에서 추가한 TC'],['미실행','1차에 실행했던 TC가 미실행으로 변경']].forEach(([k,d])=>{
+      const ids=R.tc.filter(r=>r.chg===k);const tr=el('tr');const c0=el('td');c0.append(badge(k),el('span',0,' '+d));
+      const c2=el('td',0,ids.length?(k==='동일'?`${ids.length}건 (Pass ${ids.filter(r=>r.st==='Pass').length}, Fail ${ids.filter(r=>r.st==='Fail').length}, 미실행 ${ids.filter(r=>r.st==='미실행').length})`:ids.map(r=>r.id).join(', ')):'-');c2.style.textAlign='left';tr.append(c0,el('td',0,ids.length+'건'),c2);b.append(tr)});
+    t.append(b);box.append(t);sec.append(box);
+  }
+  const g=el('div','grid2');
+  const b1=el('div','box');b1.append(el('h2',0,'영역 × 구분별 결과'));
+  [['고객','기능'],['고객','UI/UX'],['고객','보안'],['관리자','기능'],['관리자','보안'],['관리자','UI/UX']].forEach(([a,t])=>{
+    const gg=tc.filter(r=>r.area===a&&r.type===t);if(!gg.length)return;
+    const row=el('div','bar');row.append(el('span',0,`${a} · ${t}`));const tr=el('div','track');
+    ST.forEach(s=>{const c=gg.filter(r=>r.st===s).length;if(!c)return;const i=el('i');i.style.width=c/gg.length*100+'%';i.style.background=s==='Pass'?'var(--pass)':s==='Fail'?'var(--fail)':'var(--skip)';i.title=`${s} ${c}`;tr.append(i)});
+    row.append(tr,el('span',0,`${gg.filter(r=>r.st==='Pass').length}/${gg.length} Pass`));b1.append(row)});
+  const lg=el('div','legend');[['Pass','var(--pass)'],['Fail','var(--fail)'],['미실행','var(--skip)']].forEach(([t,c])=>{const s=el('span',0,t);s.style.setProperty('--c',c);lg.append(s)});b1.append(lg);
+  const b2=el('div','box');b2.append(el('h2',0,'총평'));const ul=el('ul','l');
+  const hi=R.def.filter(d=>d.sev==='High'||d.sev==='Medium').map(d=>d.id);
+  const sum=[`전체 ${tot}건 중 ${P}건 Pass, ${F}건 Fail, ${S}건 미실행 (합격률 ${rate(tc)}%, 실행 ${tot-S}건 기준).`,
+   '핵심 기능(FAQ·재고·주문 조회·추천·상담 기록, 관리자 수정의 실시간 반영, 로그인·권한, 고객 평가, 피드백의 AI 지침 반영)은 기대대로 동작했다.',
+   `Fail ${F}건은 모두 Medium 이하이며, 우선 고칠 것은 ${hi.join(', ')}.`,
+   R.cmp?'나머지는 UI·문구 수정(모바일 버튼 줄바꿈, 입력창 문구, 터치 대상 크기, 안내 문구)이다. 결함은 아직 수정하지 않았으므로 수정 후 3차에서 재확인한다.':'나머지는 모바일 버튼 줄바꿈·입력창 문구 잘림·문구 정리 같은 UI/문구 수정이다.'];
+  sum.forEach(t=>ul.append(el('li',0,t)));b2.append(ul);g.append(b1,b2);sec.append(g);
+  const g2=el('div','grid2');const b3=el('div','box');b3.append(el('h2',0,'테스트 범위·환경'));const u3=el('ul','l');R.env.forEach(t=>u3.append(el('li',0,t)));b3.append(u3);
+  const b4=el('div','box');b4.append(el('h2',0,'테스트 중 확인한 점'));const u4=el('ul','l');R.notes.forEach(t=>u4.append(el('li',0,t)));b4.append(u4);g2.append(b3,b4);sec.append(g2);
+  const b5=el('div','box');b5.append(el('h2',0,'화면 캡처'));const sh=el('div','shots');
+  R.shots.forEach(([src,cap])=>{const f=el('figure');const i=el('img');i.src=src;i.alt=cap;i.loading='lazy';f.append(i,el('figcaption',0,cap));sh.append(f)});b5.append(sh);sec.append(b5);
+}
+
+function buildDef(R,sec){
+  sec.append(el('h2','ph','3. 결함 목록'));
+  R.def.forEach(d=>{const c=el('div','defect '+d.sev);const h=el('h3',0,`${d.id} · ${d.title}`);if(d.state)h.append(badge(d.state,d.state==='신규'?'신규':d.state.startsWith('일부')?'개선':'악화'));c.append(h);
+    const l=el('dl');[['심각도',d.sev],['구분',d.cat],['관련 TC',d.tc],['현상',d.desc],['개선 제안',d.fix]].forEach(([k,v])=>l.append(el('dt',0,k),el('dd',0,v)));c.append(l);sec.append(c)});
+}
+
+const root=$('#root'),nav=$('#rounds');const params=new URLSearchParams(location.search);
+if(params.get('print')==='all')document.body.classList.add('print');
+const subs=[['tc','테스트 케이스 (TC)',buildTC],['rep','결과 보고서',buildRep],['def','결함 목록',buildDef]];
+const state={round:location.hash==='#r1'?1:2,sub:'tc'};
+ROUNDS.forEach(R=>{
+  const rd=el('section','round');rd.id='r'+R.n;rd.append(el('h2','ph rt',`${R.label} (${R.date})`));
+  const sb=el('div','sub');sb.setAttribute('role','tablist');sb.setAttribute('aria-label',R.label+' 보기');rd.append(sb);
+  const wrap=el('div');wrap.style.paddingTop='16px';rd.append(wrap);
+  R.secs={};R.subBtns={};
+  subs.forEach(([k,label,fn],i)=>{const s=el('section','rsec'+(i===0?' first':''));fn(R,s);wrap.append(s);R.secs[k]=s;
+    const b=el('button',0,label);b.type='button';b.setAttribute('role','tab');b.onclick=()=>{state.sub=k;show()};sb.append(b);R.subBtns[k]=b});
+  root.append(rd);R.node=rd;
+  const nb=el('button',0,R.label);nb.type='button';nb.setAttribute('role','tab');nb.append(el('small',0,`${R.tc.length}건 · 합격률 ${rate(R.tc)}%`));nb.onclick=()=>{state.round=R.n;location.hash='#r'+R.n;show()};nav.append(nb);R.navBtn=nb;
+});
+function show(){ROUNDS.forEach(R=>{const on=R.n===state.round;R.node.hidden=!on;R.navBtn.setAttribute('aria-selected',on);
+  Object.keys(R.secs).forEach(k=>{R.secs[k].hidden=k!==state.sub;R.subBtns[k].setAttribute('aria-selected',k===state.sub)})})}
+show();
+</script>
+</body>
+</html>

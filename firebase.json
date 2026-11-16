@@ -15,7 +15,10 @@
       "ignore": [
         "firebase.json",
         "**/.*",
-        "**/node_modules/**"
+        "**/node_modules/**",
+        "build_report.py",
+        "report.tpl.html",
+        "round1.json"
       ],
       "rewrites": [
         {
