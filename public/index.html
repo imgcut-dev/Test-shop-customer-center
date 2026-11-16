@@ -197,7 +197,7 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
 .tabs button[aria-selected="true"]{background:var(--accent)}
 .front{flex:none;width:300px;overflow-y:auto}
 .hot{background:var(--panel);border-radius:24px;padding:16px 12px}
-.hot h2{font-size:17px;font-weight:700;margin:0 8px 8px}.hot .note{margin:0 8px 8px}
+.hot h2{font-size:17px;font-weight:700;margin:0 8px 8px}.hot .note{margin:0 8px 8px}details.hot summary{font-size:15px;font-weight:600;cursor:pointer;padding:6px 8px;list-style:none;color:var(--tintfg)}details.hot summary::-webkit-details-marker{display:none}details.hot summary::after{content:' ▾'}details.hot[open] summary::after{content:' ▴'}details.hot[open] summary{margin-bottom:6px}
 .row{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;color:var(--fg);text-align:left;padding:10px 8px;border-radius:14px;cursor:pointer}
 .row:hover{background:var(--bg)}
 .ic2{width:36px;height:36px;flex:none;border-radius:10px;background:var(--bg);display:grid;place-items:center;font-size:18px}
@@ -961,9 +961,9 @@ function renderAdmin(){
 /* ---------- 쇼핑 화면 ---------- */
 let fcat='전체';
 const EMO={사료:'🥣',간식:'🦴',영양제:'💊'},CCLS={사료:'a',간식:'b',영양제:'c'};
-function renderTest(){ // 오른쪽 배송 테스트용 정보: 가상 주문 목록(누르면 주문번호가 입력됨)
-  const f=$('testbox');f.textContent='';
-  const box=mk('div','hot');box.append(mk('h2',null,'배송 테스트용 정보'),mk('p','note','가상 데이터예요. 주문번호를 누르고, 보리가 물으면 아래 뒤 4자리를 입력해 보세요.'));
+function renderTest(){ // 오른쪽 배송 테스트용 정보: 접혀 있다가 누르면 펼쳐짐. 가상 주문(누르면 주문번호가 입력됨)
+  const f=$('testbox'),was=f.querySelector('details'),open=!!(was&&was.open);f.textContent='';
+  const box=mk('details','hot');box.open=open;box.append(mk('summary',null,'배송 테스트용 정보'),mk('p','note','가상 데이터예요. 주문번호를 누르고, 보리가 물으면 아래 뒤 4자리를 입력해 보세요.'));
   const list=Object.entries(D.orders).sort((a,b)=>a[0].localeCompare(b[0])).slice(0,1);
   if(!list.length)box.append(mk('span','note','불러오는 중이에요…'));
   list.forEach(([id,o])=>{
