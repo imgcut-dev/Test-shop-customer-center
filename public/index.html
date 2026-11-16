@@ -18,7 +18,7 @@ body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--font);padding-inli
 .top{display:flex;align-items:center;gap:10px;flex:none}
 .top h1{font-size:17px;margin:0}
 .top .sp{flex:1}
-.top a{font-size:13px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:3px 12px;background:var(--panel)}
+.top a{font-size:13px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:9px 14px;display:inline-flex;align-items:center;min-height:36px;background:var(--panel)}
 [hidden]{display:none!important}
 .card{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .hd{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
@@ -38,7 +38,7 @@ body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--font);padding-inli
 .tag.no{color:var(--warn)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 10px}.chips[hidden]{display:none}
 .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center;width:100%}.gl{font-size:12px;color:var(--mute);min-width:64px}
-.chips button{font:inherit;font-size:13px;background:none;color:var(--accent);border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer}
+.chips button{white-space:nowrap;font:inherit;font-size:13px;background:none;color:var(--accent);border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer}
 .chips button:hover{border-color:var(--accent)}
 form.in{display:flex;align-items:flex-end;gap:8px;padding:12px;border-top:1px solid var(--line)}
 textarea{box-sizing:border-box;flex:1;font:inherit;line-height:1.5;resize:none;overflow-y:auto;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:9px 12px;max-height:120px;min-width:0}
@@ -117,7 +117,7 @@ button.kpi:hover{border-color:var(--accent)}
 .fld textarea{resize:vertical;line-height:1.6}
 .btns{display:flex;align-items:center;gap:10px}
 td.fb{min-width:250px;padding:6px;vertical-align:top;white-space:normal}td.fb textarea{width:100%;box-sizing:border-box;font:inherit;font-size:12px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 6px;margin:4px 0;resize:vertical}td.fb input[type=checkbox],td input[type=checkbox]{width:auto;min-width:0}.rt{font-size:16px;background:none;border:1px solid var(--line);border-radius:8px;padding:2px 8px;cursor:pointer;margin-right:4px}.rt.on{background:var(--accent);border-color:var(--accent)}.ap{font-size:12px;margin-right:8px}
-.rate{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mute);align-self:flex-start;margin:-4px 0 2px 4px}.rate button{background:none;border:1px solid var(--line);border-radius:99px;padding:2px 10px;cursor:pointer;font-size:14px;line-height:1.4}.rate button.on{background:var(--accent);border-color:var(--accent)}.rate button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.rate{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mute);align-self:flex-start;margin:-4px 0 2px 4px}.rate button{background:none;border:1px solid var(--line);border-radius:99px;padding:6px 14px;min-height:36px;cursor:pointer;font-size:14px;line-height:1.4}.rate button.on{background:var(--accent);border-color:var(--accent)}.rate button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .btn2{font:inherit;font-weight:700;background:var(--accent);color:var(--accent-fg);border:0;border-radius:8px;padding:8px 20px;cursor:pointer}
 .btn3{font:inherit;background:none;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer}
 .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
@@ -186,7 +186,7 @@ body.cust .hd .av{font-size:20px}
     <div class="hd"><div class="av">🐶</div><div><b id="hdName">보리</b><small id="sub">꼬순내 마켓 상담 도우미 · 보통 바로 답해요</small></div><button type="button" class="home" id="homeBtn">처음으로</button></div>
     <div class="log" id="log" aria-live="polite"></div>
     <div class="chips" id="chips"></div>
-    <form class="in" id="f"><textarea id="t" rows="1" placeholder="메시지를 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"></textarea><button class="send" id="send" type="submit">전송</button></form>
+    <form class="in" id="f"><textarea id="t" rows="1" aria-label="메시지 입력" placeholder="메시지를 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"></textarea><button class="send" id="send" type="submit">전송</button></form>
   </section></div>
   <section class="card" data-view="admin" hidden>
     <div class="hd"><div class="av">🐾</div><div><b>꼬순내 마켓 관리자</b><small>오늘도 꼬순내 나는 하루예요 · 대시보드, 질문 분석, 보리 설정, FAQ, 데이터 관리</small></div></div>
@@ -289,7 +289,7 @@ const chipBtn=x=>{const b=mk('button',null,x);b.type='button';b.onclick=()=>send
 function setChips(l){chips.textContent='';
   if(l.length&&typeof l[0]==='object')l.forEach(g=>{const r=mk('div','grp');r.append(mk('span','gl',g.label));g.items.forEach(x=>r.append(chipBtn(x)));chips.append(r)});
   else l.forEach(x=>chips.append(chipBtn(x)));
-  chips.hidden=!l.length}
+  chips.hidden=!l.length;bottom()}
 let atHome=true,lastKind=null,sums=[];
 const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const shortName=p=>(p.name||'').replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').replace(/\s\d+(\.\d+)?(kg|g|정|p)(?=[\s+]|$).*$/i,'').trim();
@@ -655,7 +655,7 @@ function renderAI(box){
   const s1=sec('AI 정보');const kv=mk('dl','kv');
   const row=(k,v)=>{kv.append(mk('dt',null,k));const d=mk('dd');if(typeof v==='string')d.textContent=v;else d.append(v);kv.append(d)};
   row('AI 서비스','Anthropic Claude');
-  row('호출 방식','아티팩트 내장 호출 · 별도 API 키 없음 · 상담하는 사람의 계정으로 실행');
+  row('호출 방식','Anthropic Claude API (Haiku·Sonnet·Opus 중 설정한 모델로 호출)');
   const sel=mk('select');sel.id='aiTier';[['quick','빠름 (quick) · 현재 권장'],['default','기본 (default)'],['complex','고급 (complex) · 느리지만 정교']].forEach(([v,l])=>{const o=mk('option',null,l);o.value=v;if(v===a.tier)o.selected=true;sel.append(o)});
   row('모델 등급',sel);
   row('정확한 모델명','등급에 맞춰 플랫폼이 고르며, 이 페이지에서는 확인할 수 없어요');
@@ -743,7 +743,7 @@ function renderConn(box){if(window.STANDALONE)return renderLocal(box);
   const s1=sec('현재 연결 상태');
   const kv=mk('dl','kv');
   const row=(k,v)=>{kv.append(mk('dt',null,k));const d=mk('dd');if(typeof v==='string')d.textContent=v;else d.append(v);kv.append(d)};
-  row('연결 방식','아티팩트 내장 Claude (API 키 필요 없음)');
+  row('연결 방식','Anthropic Claude API');
   row('상태',mk('span','pill'+(ok?'':' no'),ok?'● 연결됨':'● 이 화면에서는 사용할 수 없어요'));
   row('모델 등급',AG().tier);
   s1.append(kv);box.append(s1);
@@ -779,7 +779,7 @@ function renderConn(box){if(window.STANDALONE)return renderLocal(box);
 }
 function renderQA(box){
   const g={};CH.forEach(c=>{const q=c.q.trim();(g[q]=g[q]||{q,n:0,kinds:{},last:c}).n++;g[q].kinds[c.kind]=(g[q].kinds[c.kind]||0)+1});
-  const list=Object.values(g).sort((x,y)=>y.n-x.n);
+  const list=Object.values(g).filter(x=>/[^\s*?!.]/.test(x.q)).sort((x,y)=>y.n-x.n);
   const aiN=CH.filter(c=>c.kind==='ai').length,fastN=CH.filter(c=>c.kind==='fast').length,errN=CH.filter(c=>c.kind==='error').length;
   const cand=list.filter(x=>x.kinds.ai&&!faqMatch(x.q)).length;
   const k=(l,v,sub)=>{const d=mk('div','kpi');d.append(mk('small',null,l),mk('b',null,v));if(sub)d.append(mk('i',null,sub));return d};
@@ -860,7 +860,8 @@ function renderAdmin(){
     cfg.cols.forEach(([f,,k])=>{
       const td=mk('td',k==='nm'?'nm':'');const i=mk(k==='area'?'textarea':'input',k==='num'?'num':k==='area'?'area':'');if(k==='area')i.rows=2;i.value=r[f]==null?'':r[f];i.setAttribute('aria-label',id+' '+f);
       i.onchange=async()=>{
-        const b={};cfg.cols.forEach(([ff,,kk],ix)=>{const v=ins[ix].value;b[ff]=kk==='num'?(Number(v)||0):v});
+        const b={};let bad='';cfg.cols.forEach(([ff,lb,kk],ix)=>{const v=ins[ix].value;if(kk==='num'){const n=Number(v);if(v.trim()===''||isNaN(n)||n<0)bad=bad||(lb||ff)+'은(는) 0 이상의 숫자만 입력해요';b[ff]=n}else{if(kk==='nm'&&!v.trim())bad=bad||'이름은 비울 수 없어요';b[ff]=v}});
+        if(bad){status('저장 실패: '+bad);return}
         try{status('저장 중…');await db.collection(tab).doc(id).set(b);status('저장됨')}catch(e){status('저장 실패: '+(e.message||e.code))}
       };
       ins.push(i);td.append(i);tr.append(td);
