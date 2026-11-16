@@ -190,7 +190,7 @@ body{letter-spacing:-.01em}
 .chips button{border:0;background:var(--tint);color:var(--tintfg);border-radius:12px;padding:11px 16px;font-size:15px;font-weight:600;min-height:44px}
 .chips button:hover{filter:brightness(.97)}
 form.in{border-top:0;padding:8px 16px 16px}
-textarea{border:0;background:var(--bg);border-radius:16px;padding:13px 16px;font-size:16px}
+textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font-size:16px;line-height:24px;height:48px;overflow-y:hidden}
 .send{border-radius:14px;height:48px;padding:0 20px;font-size:16px;font-weight:600}
 .rate button{border:0;background:var(--bg);border-radius:10px}
 .tabs button{border:0;background:var(--bg);border-radius:10px;font-weight:600}
@@ -209,7 +209,7 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:13px 16px;font
     <div class="hd"><div class="av">🐶</div><div><b id="hdName">보리</b><small id="sub">꼬순내 마켓 상담 도우미 · 보통 바로 답해요</small></div><button type="button" class="home" id="homeBtn">처음으로</button></div>
     <div class="log" id="log" aria-live="polite"></div>
     <div class="chips" id="chips"></div>
-    <form class="in" id="f"><textarea id="t" rows="1" aria-label="메시지 입력" placeholder="메시지를 입력하세요 (Enter 전송, Shift+Enter 줄바꿈)"></textarea><button class="send" id="send" type="submit">전송</button></form>
+    <form class="in" id="f"><textarea id="t" rows="1" aria-label="메시지 입력" placeholder="메시지를 입력하세요"></textarea><button class="send" id="send" type="submit">전송</button></form>
   </section></div>
   <section class="card" data-view="admin" hidden>
     <div class="hd"><div class="av">🐾</div><div><b>꼬순내 마켓 관리자</b><small>오늘도 꼬순내 나는 하루예요 · 대시보드, 질문 분석, 보리 설정, FAQ, 데이터 관리</small></div></div>
@@ -519,7 +519,7 @@ async function send(text){
 $('homeBtn').onclick=()=>{if(!busy)home()};
 $('f').onsubmit=e=>{e.preventDefault();send(t.value)};
 t.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send(t.value)}};
-t.oninput=()=>{t.style.height='auto';t.style.height=Math.min(t.scrollHeight+2,120)+'px'};
+t.oninput=()=>{t.style.height='auto';t.style.height=Math.min(t.scrollHeight,120)+'px';t.style.overflowY=t.scrollHeight>120?'auto':'hidden'};
 /* ---------- admin ---------- */
 let tab='dash',stTimer=null;
 const st=mk('span');st.id='st';
