@@ -963,8 +963,8 @@ let fcat='전체';
 const EMO={사료:'🥣',간식:'🦴',영양제:'💊'},CCLS={사료:'a',간식:'b',영양제:'c'};
 function renderTest(){ // 오른쪽 배송 테스트용 정보: 가상 주문 목록(누르면 주문번호가 입력됨)
   const f=$('testbox');f.textContent='';
-  const box=mk('div','hot');box.append(mk('h2',null,'배송 테스트용 정보'),mk('p','note','가상 데이터예요. 주문번호를 누르고, 보리가 물으면 뒤 4자리를 입력해 보세요.'));
-  const list=Object.entries(D.orders).sort((a,b)=>a[0].localeCompare(b[0])).slice(0,10);
+  const box=mk('div','hot');box.append(mk('h2',null,'배송 테스트용 정보'),mk('p','note','가상 데이터예요. 주문번호를 누르고, 보리가 물으면 아래 뒤 4자리를 입력해 보세요.'));
+  const list=Object.entries(D.orders).sort((a,b)=>a[0].localeCompare(b[0])).slice(0,1);
   if(!list.length)box.append(mk('span','note','불러오는 중이에요…'));
   list.forEach(([id,o])=>{
     const t=mk('button','row');t.type='button';const info=mk('div','ri');
