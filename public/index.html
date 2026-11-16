@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>꼬순내 마켓</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Jua&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <style>
 html,body{margin:0}
 
-:root{--bg:#f3f6f4;--panel:#fff;--fg:#17211c;--mute:#667570;--line:#dde5e0;--accent:#0f8a6a;--accent-fg:#fff;--bot:#ecf1ee;--warn:#c0392b;--ok:#0f8a6a;--font:'Noto Sans KR',system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1411;--panel:#161e1a;--fg:#e8efeb;--mute:#8a9892;--line:#26322d;--accent:#34c79e;--accent-fg:#06231a;--bot:#202b26;--warn:#ff8a7a;--ok:#34c79e;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0e1411;--panel:#161e1a;--fg:#e8efeb;--mute:#8a9892;--line:#26322d;--accent:#34c79e;--accent-fg:#06231a;--bot:#202b26;--warn:#ff8a7a;--ok:#34c79e;color-scheme:dark}
+:root{--bg:#f2f4f6;--panel:#fff;--fg:#191f28;--mute:#6b7684;--line:#e5e8eb;--accent:#3182f6;--accent-fg:#fff;--bot:#f2f4f6;--warn:#f04452;--ok:#00a86b;--tint:#e8f3ff;--tintfg:#1b64da;--font:'Pretendard',-apple-system,'Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101013;--panel:#17171c;--fg:#f9fafb;--mute:#8b95a1;--line:#2c2c35;--accent:#4593fc;--accent-fg:#fff;--bot:#2c2c35;--warn:#ff6b7a;--ok:#34d399;--tint:#1c3050;--tintfg:#6ea8fe;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101013;--panel:#17171c;--fg:#f9fafb;--mute:#8b95a1;--line:#2c2c35;--accent:#4593fc;--accent-fg:#fff;--bot:#2c2c35;--warn:#ff6b7a;--ok:#34d399;--tint:#1c3050;--tintfg:#6ea8fe;color-scheme:dark}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--font);padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:16px}
 .wrap{max-width:560px;height:100%;margin:0 auto;display:flex;flex-direction:column;gap:10px}
@@ -125,11 +125,7 @@ pre.prompt{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);bord
 td textarea{font:inherit;font-size:14px;width:100%;min-width:260px;box-sizing:border-box;background:var(--bg);color:var(--fg);border:1px solid transparent;border-radius:6px;padding:6px 8px;resize:vertical}
 td textarea:hover{border-color:var(--line)}
 /* 꼬순내 마켓 (고객 화면) */
-body.cust{--bg:#fff7ec;--panel:#fffdf8;--fg:#3a2a1c;--mute:#8a7664;--line:#f0dfca;--accent:#e8791a;--accent-fg:#fff;--bot:#fdeedd}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.cust{--bg:#1c1510;--panel:#251c15;--fg:#f6e9db;--mute:#b39d86;--line:#3a2c20;--accent:#ffa24d;--accent-fg:#2b1700;--bot:#33261b}}
-:root[data-theme="dark"] body.cust{--bg:#1c1510;--panel:#251c15;--fg:#f6e9db;--mute:#b39d86;--line:#3a2c20;--accent:#ffa24d;--accent-fg:#2b1700;--bot:#33261b}
-.wrap.shop{max-width:1120px}
-body.cust .top h1{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;font-size:24px;color:var(--accent)}
+.wrap.shop{max-width:720px}
 .stage{flex:1;min-height:0;display:flex;gap:16px}
 .front{flex:1;min-width:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 .chatcard{flex:0 0 400px;border-radius:20px}
@@ -175,6 +171,33 @@ body.cust .hd .av{font-size:20px}
  .chatcard{flex:1;min-height:380px}}
 .deny{white-space:pre-line;padding:40px 16px;text-align:center;color:var(--mute)}
 
+
+/* 토스 디자인(TDS) 톤: 파랑 포인트, 큰 라운드, 납작한 면 */
+body{letter-spacing:-.01em}
+.top h1{font-size:20px;font-weight:700}
+.top a{border:0;background:var(--tint);color:var(--tintfg);border-radius:12px;font-weight:600}
+.card{border:0;border-radius:24px}
+.hd{border-bottom:0;padding:16px 20px}
+.hd b{font-size:17px;font-weight:700}
+.av{border-radius:14px;background:var(--tint);color:var(--tintfg)}
+.home{border:0;background:var(--tint);color:var(--tintfg);border-radius:10px;padding:8px 12px;font-weight:600}
+.m{border-radius:20px;padding:11px 15px;font-size:16px;line-height:1.55}
+.m.bot{border-bottom-left-radius:6px}.m.user{border-bottom-right-radius:6px;font-weight:500}
+.info{border:0;background:var(--bg);border-radius:18px;padding:14px 16px}
+.tag{border-radius:6px;background:var(--tint);color:var(--tintfg);padding:2px 8px}
+.tag.no{background:rgba(240,68,82,.12);color:var(--warn)}
+.chips{padding:4px 20px 12px;gap:8px}
+.chips button{border:0;background:var(--tint);color:var(--tintfg);border-radius:12px;padding:11px 16px;font-size:15px;font-weight:600;min-height:44px}
+.chips button:hover{filter:brightness(.97)}
+form.in{border-top:0;padding:8px 16px 16px}
+textarea{border:0;background:var(--bg);border-radius:16px;padding:13px 16px;font-size:16px}
+.send{border-radius:14px;height:48px;padding:0 20px;font-size:16px;font-weight:600}
+.rate button{border:0;background:var(--bg);border-radius:10px}
+.tabs button{border:0;background:var(--bg);border-radius:10px;font-weight:600}
+.tabs button[aria-selected="true"]{background:var(--accent)}
+.stage .front{display:none}
+.deal{align-self:flex-start;max-width:92%;display:flex;flex-direction:column;gap:6px;background:var(--bg);border-radius:18px;padding:14px 16px;align-items:flex-start}
+.deal b{font-size:17px;font-weight:700}.deal .pr{color:var(--mute);font-size:14px}
 </style>
 </head>
 <body>
@@ -293,28 +316,18 @@ function setChips(l){chips.textContent='';
 let atHome=true,lastKind=null,sums=[];
 const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const shortName=p=>(p.name||'').replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').replace(/\s\d+(\.\d+)?(kg|g|정|p)(?=[\s+]|$).*$/i,'').trim();
-function homeChips(){
-  const P=Object.entries(D.products),a=[];
-  P.forEach(([id,p])=>{const s=D.stock[id];if(!s)return;const q=Number(s.qty);if(q<=0)a.push(`${shortName(p)} 언제 입고돼요?`);else if(q<=5)a.push(`${shortName(p)} 아직 살 수 있나요?`)});
-  if(P.length)a.push('지금 제일 할인 많이 하는 상품은?');
-  if(P.some(([,p])=>/임박/.test(p.note||'')))a.push('유통기한 임박 상품은 뭐가 있어요?');
-  const has=c=>P.some(([,p])=>p.category===c),c=[];
-  if(has('간식'))c.push('3만원 이하 간식 추천해줘');
-  if(has('사료'))c.push('사료 중 제일 저렴한 건?');
-  if(has('영양제'))c.push('영양제 추천해줘');
-  return [{label:'상품·재고',items:shuf(a).slice(0,2)},{label:'주문·배송',items:['주문/배송 조회',shuf(['주문 취소하고 싶어요','배송이 늦어지면 어떻게 하나요?','교환/환불 방법','지금 주문하면 언제 받아요?'])[0]]},{label:'추천',items:shuf(c).slice(0,2)}].filter(g=>g.items.length);
-}
+const HOME_CHIPS=['주문/배송 조회','교환/환불 방법','상품 추천','오늘의 핫딜'];
 const DEFAULT_AGENT={
  name:'보리',
  tone:'다정하고 발랄한 존댓말',
- welcome:'안녕하세요! 꼬순내 마켓 상담 도우미 보리예요 🐶 사료·간식 재고부터 배송까지 편하게 물어보세요. 주문 조회는 주문번호(예: ORD-0000)를 알려 주시면 돼요!',
+ welcome:'안녕하세요, 꼬순내 마켓 상담 도우미 보리예요 🐶 주문·배송부터 상품 재고, 추천까지 궁금한 걸 편하게 물어보세요.',
  instructions:"당신은 반려견 전문 쇼핑몰 '꼬순내 마켓'의 상담 도우미 '보리'입니다. 다정하고 발랄한 존댓말로 친구처럼 편하게 말하되, 정보는 정확해야 합니다. 답변은 1~3문장으로 짧게, 마크다운 없이 쓰고, 이모지(🐶🐾 등)는 한 답변에 최대 1~2개만 쓰세요. 품절이나 배송 지연 같은 고객의 걱정에는 먼저 공감하고 해결 방법을 알려 주세요. 상품·재고·가격은 [상품 데이터]에 있는 내용만 근거로, 배송비·교환·환불·운영시간 같은 정책은 [FAQ·정책 정보]에 있는 내용만 근거로 답하고, 근거가 없는 내용은 지어내지 말고 '고객센터에서 확인해 드릴게요'처럼 안내하세요. 재고가 0이면 품절이며 입고예정일이 있으면 알려 주세요. 추천은 상품 데이터 안의 상품만 하세요. 주문·배송 조회는 주문번호(예: ORD-0000)를 알려 주시면 바로 확인해 드린다고 안내하세요. 쇼핑몰과 무관한 질문은 귀엽게 양해를 구하고 쇼핑 문의로 안내하세요.",
  tier:'quick',historyN:8,
  shipCutoff:14,shipHandling:1,shipMin:1,shipMax:2
 };
 const AG=()=>({...DEFAULT_AGENT,...agent});
 const HOME='↩ 처음으로';
-function home(){log.textContent='';hist.length=0;pending=null;tries=0;atHome=true;add('bot',AG().welcome);setChips(homeChips());t.value='';t.style.height='auto'}
+function home(){log.textContent='';hist.length=0;pending=null;tries=0;atHome=true;add('bot',AG().welcome);setChips(HOME_CHIPS);t.value='';t.style.height='auto'}
 home();
 function stockText(id){const s=D.stock[id];if(!s)return '재고 정보 없음';const q=Number(s.qty);return q>0?`재고 ${q}개`+(q<=5?' (소량 남음)':''):'품절'+(s.restock?` · 입고예정 ${s.restock}`:'')}
 function productCard(id){
@@ -345,6 +358,7 @@ function matchProducts(msg){
   return out.slice(0,4);
 }
 function fast(msg){ // AI 없이 바로 답하면 true
+  if(meta(msg)){metaFlag=true;return true}
   const oid=normOrder(msg);
   if(oid){
     if(!D.orders[oid]){add('bot',`${oid} 주문을 못 찾았어요 😢 주문번호를 한 번만 더 확인해 주세요.`);pending=null;return true}
@@ -383,6 +397,53 @@ function fast(msg){ // AI 없이 바로 답하면 true
   }
   return false;
 }
+/* ---------- 핫딜·반려동물 프로필 (대화 속에서 제안) ---------- */
+let pet=null;try{pet=JSON.parse(localStorage.getItem('kkm_pet')||'null')}catch(e){}
+let petStep=null,dealShown=false,dealDeclined=false,petAsked=false,dealId=null,metaFlag=false,nextChips=null;
+const SP={dog:'강아지',cat:'고양이',both:'강아지·고양이'},SZ={small:'소형',medium:'중형',large:'대형'};
+function savePet(){try{pet?localStorage.setItem('kkm_pet',JSON.stringify(pet)):localStorage.removeItem('kkm_pet')}catch(e){}saveLog()}
+function dealCard(id){
+  lastKind='deal';dealId=id;dealShown=true;
+  const p=D.products[id],off=p.price?Math.round((1-p.salePrice/p.price)*100):0,c=mk('div','deal');
+  c.append(mk('span','tag','오늘만 '+off+'% 할인'),mk('b',null,shortName(p)||p.name),mk('span','pr',won(p.salePrice)+' · '+stockText(id)));
+  log.append(c);bottom();
+}
+function pickDeal(){ // 할인율 순, 프로필이 있으면 크기에 맞는 분류에 가산점 (ponytail: 상품에 반려동물 속성이 없어 분류로만 추정)
+  const pref=pet&&pet.size==='small'?['간식','영양제']:pet&&(pet.size==='medium'||pet.size==='large')?['사료']:[];
+  const r=Object.entries(D.products).filter(([id])=>Number((D.stock[id]||{}).qty)>0).map(([id,p])=>[id,(p.price?1-p.salePrice/p.price:0)+(pref.includes(p.category)?.15:0)]).sort((a,b)=>b[1]-a[1])[0];
+  return r&&r[0];
+}
+function offerDeal(){
+  const id=pickDeal();if(!id)return askPet();
+  const who=pet&&pet.species?[SZ[pet.size],SP[pet.species]].filter(Boolean).join(' ')+' 보호자님께 어울릴 만한 ':'';
+  add('bot',who?who+'핫딜이에요.':'오늘의 핫딜 하나만 소개할게요.');dealCard(id);nextChips=['자세히 보기','다음에 볼게요'];
+}
+function askPet(){
+  if(pet||petAsked){add('bot','언제든 다시 불러 주세요.');nextChips=[HOME];return}
+  petAsked=true;petStep='species';
+  add('bot','맞춤 추천을 드리려고 하는데, 몇 가지만 알려 주실래요? 건너뛰어도 괜찮아요.');add('bot','함께 사는 아이는 누구예요?');nextChips=['강아지','고양이','둘 다','건너뛰기'];
+}
+function meta(msg){ // 대화 흐름용 메시지. 처리하면 true
+  if(/프로필\s*삭제/.test(msg)){pet=null;petStep=null;savePet();add('bot','저장된 반려동물 정보를 지웠어요.');nextChips=[HOME];return true}
+  if(msg==='해결됐어요'){pending=null;add('bot','해결돼서 다행이에요!');if(!dealShown&&!dealDeclined)offerDeal();else askPet();return true}
+  if(msg==='다른 문의'){add('bot','네, 무엇이든 물어보세요.');nextChips=HOME_CHIPS;return true}
+  if(msg==='자세히 보기'&&dealId){productCard(dealId);nextChips=['다음에 볼게요'];return true}
+  if(msg==='다음에 볼게요'){dealDeclined=true;askPet();return true}
+  if(/핫딜|특가/.test(msg)){const id=pickDeal();if(!id)return false;add('bot','오늘의 핫딜이에요.');dealCard(id);nextChips=['자세히 보기','다음에 볼게요'];return true}
+  if(msg==='상품 추천'){add('bot','어떤 상품을 찾으세요?');nextChips=['사료 중 제일 저렴한 건?','3만원 이하 간식 추천해줘','영양제 추천해줘','오늘의 핫딜'];return true}
+  if(petStep){
+    if(/건너뛰기|나중에/.test(msg)){petStep=null;add('bot','알겠어요. 필요하실 때 말씀해 주세요.');nextChips=[HOME];return true}
+    if(petStep==='species'){
+      const s=/둘/.test(msg)?'both':/고양이|냥/.test(msg)?'cat':/강아지|개|댕/.test(msg)?'dog':null;
+      if(s){pet={species:s};if(s==='cat'){petStep=null;savePet();add('bot','고양이 정보를 저장했어요. 꼬순내 마켓은 강아지 상품 위주라 고양이용은 아직 준비 중이에요.');nextChips=[HOME]}else{petStep='size';add('bot','아이 크기는 어느 정도예요?');nextChips=['소형 5kg 이하','중형','대형','모름']}return true}
+    }else{
+      const z=/소형|작|5kg/.test(msg)?'small':/중형/.test(msg)?'medium':/대형|큰/.test(msg)?'large':/모름|몰라/.test(msg)?'unknown':null;
+      if(z){pet.size=z;petStep=null;savePet();add('bot','저장했어요. 앞으로 추천에 반영할게요. 지우고 싶으면 "프로필 삭제"라고 보내 주세요.');nextChips=[HOME];return true}
+    }
+    petStep=null;
+  }
+  return false;
+}
 function verify(oid,p4){
   const o=D.orders[oid];
   if(o&&o.phone4===p4){pending=null;tries=0;add('bot','확인했어요! 주문 정보를 가져왔어요 🐶');orderCard(oid);return true}
@@ -417,7 +478,7 @@ let myLog=[],logChain=Promise.resolve();
 const maskQ=s=>s.replace(/(?<!ORD-)(?<!\d)\d{4}(?!\d)/gi,'****').replace(/\d{7,}/g,'*******');
 function saveLog(){
   const snap=myLog.map(e=>({...e}));
-  logChain=logChain.then(()=>db.doc('chats/'+uid).set({entries:snap,updatedAt:Date.now()})).catch(()=>{});
+  logChain=logChain.then(()=>db.doc('chats/'+uid).set({entries:snap,updatedAt:Date.now(),pet:pet||null})).catch(()=>{});
 }
 function logChat(q,a,kind,ms,src){
   if(!db||!uid)return null;
@@ -438,10 +499,10 @@ function addRate(en){
 }
 async function send(text){
   text=text.trim();if(!text||busy)return;
-  if(text===HOME){home();return}busy=true;btn.disabled=true;chips.hidden=true;t.value='';t.style.height='auto';
+  if(text===HOME){home();return}busy=true;metaFlag=false;nextChips=null;btn.disabled=true;chips.hidden=true;t.value='';t.style.height='auto';
   add('user',text);atHome=false;lastKind=null;sums=[];lastBot='';const t0=Date.now();let entry=null;
   try{
-    if(fast(text)){if(sums.length)hist.push({role:'user',content:text},{role:'assistant',content:'[카드로 안내함] '+sums.join(' / ')});entry=logChat(text,sums.length?sums.join(' / '):lastBot,'fast',Date.now()-t0,lastKind||'rule');return}
+    if(fast(text)){if(sums.length)hist.push({role:'user',content:text},{role:'assistant',content:'[카드로 안내함] '+sums.join(' / ')});entry=metaFlag?null:logChat(text,sums.length?sums.join(' / '):lastBot,'fast',Date.now()-t0,lastKind||'rule');return}
     hist.push({role:'user',content:text});
     const b=add('bot','');b.classList.add('dots');
     if(!sample)throw {message:'앗, 지금은 AI 상담을 쓸 수 없어요. 주문번호 조회와 재고 문의는 바로 도와드릴 수 있어요!'};
@@ -453,7 +514,7 @@ async function send(text){
     if(hist.length&&hist[hist.length-1].role==='user')hist.pop();
     logChat(text,(e&&e.message)||(e&&e.code)||'오류','error',Date.now()-t0);
     const l=log.lastChild;if(l&&l.classList.contains('dots')){l.classList.remove('dots');l.classList.add('err');l.textContent=e.code==='not_granted'?'AI 사용 권한이 거부되었습니다.':e.code==='rate_limited'?'요청이 많습니다. 잠시 후 다시 시도하세요.':(e.message||'오류가 났어요. 다시 시도해 주세요.')}
-  }finally{busy=false;btn.disabled=false;if(entry)addRate(entry);t.focus();bottom();setChips(lastKind==='product'?['비슷한 상품 추천해줘','교환/환불 가능한가요?',HOME]:lastKind==='order'?['배송이 늦어지면 어떻게 하나요?','주문 취소하고 싶어요',HOME]:[HOME])}
+  }finally{busy=false;btn.disabled=false;if(entry)addRate(entry);t.focus();bottom();setChips(nextChips||(lastKind==='product'?['비슷한 상품 추천해줘','교환/환불 가능한가요?','해결됐어요',HOME]:lastKind==='order'?['배송이 늦어지면 어떻게 하나요?','주문 취소하고 싶어요','해결됐어요',HOME]:['해결됐어요','다른 문의',HOME]))}
 }
 $('homeBtn').onclick=()=>{if(!busy)home()};
 $('f').onsubmit=e=>{e.preventDefault();send(t.value)};
@@ -941,7 +1002,7 @@ async function init(){
   if(isAdmin)db.collection('chats').onSnapshot(sn=>{CH=[];sn.docs.forEach((d,i)=>{((d.data()||{}).entries||[]).forEach(e=>CH.push({...e,cust:i+1,cid:d.id}))});CH.sort((a,b)=>b.ts-a.ts);loaded.chats=true;onData('chats')},()=>{loaded.chats=true;onData('chats')});
   db.doc('settings/agent').onSnapshot(d=>{agent=d.exists?d.data():{};loaded.settings=true;$('hdName').textContent=AG().name;if(atHome&&log.children.length===1)home();onData('settings')},()=>{});
   Object.keys(COLS).forEach(c=>{
-    db.collection(c).onSnapshot(s=>{D[c]={};s.docs.forEach(d=>D[c][d.id]=d.data());loaded[c]=true;if(atHome&&log.children.length===1)setChips(homeChips());if(c==='products'||c==='stock')renderFront();onData(c)},e=>{loaded[c]=true;onData(c)});
+    db.collection(c).onSnapshot(s=>{D[c]={};s.docs.forEach(d=>D[c][d.id]=d.data());loaded[c]=true;if(atHome&&log.children.length===1)setChips(HOME_CHIPS);if(c==='products'||c==='stock')renderFront();onData(c)},e=>{loaded[c]=true;onData(c)});
   });
 }
 init();
