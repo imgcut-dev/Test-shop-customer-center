@@ -125,7 +125,7 @@ pre.prompt{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);bord
 td textarea{font:inherit;font-size:14px;width:100%;min-width:260px;box-sizing:border-box;background:var(--bg);color:var(--fg);border:1px solid transparent;border-radius:6px;padding:6px 8px;resize:vertical}
 td textarea:hover{border-color:var(--line)}
 /* 꼬순내 마켓 (고객 화면) */
-.wrap.shop{max-width:1040px}
+.wrap.shop{max-width:1280px}
 .stage{flex:1;min-height:0;display:flex;gap:16px}
 .front{flex:1;min-width:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 .chatcard{flex:0 0 400px;border-radius:20px}
@@ -197,12 +197,13 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
 .tabs button[aria-selected="true"]{background:var(--accent)}
 .front{flex:none;width:300px;overflow-y:auto}
 .hot{background:var(--panel);border-radius:24px;padding:16px 12px}
-.hot h2{font-size:17px;font-weight:700;margin:0 8px 8px}
+.hot h2{font-size:17px;font-weight:700;margin:0 8px 8px}.hot .note{margin:0 8px 8px}
 .row{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;color:var(--fg);text-align:left;padding:10px 8px;border-radius:14px;cursor:pointer}
 .row:hover{background:var(--bg)}
 .ic2{width:36px;height:36px;flex:none;border-radius:10px;background:var(--bg);display:grid;place-items:center;font-size:18px}
 .ri{flex:1;min-width:0}.ri .tn{min-height:0;display:block;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ri .tp{font-size:14px;color:var(--mute)}
 .row .tag{flex:none}
+@media (max-width:1099px){#testbox{display:none}}
 @media (max-width:899px){.front{display:none}}
 .deal{align-self:flex-start;max-width:92%;display:flex;flex-direction:column;gap:6px;background:var(--bg);border-radius:18px;padding:14px 16px;align-items:flex-start}
 .deal b{font-size:17px;font-weight:700}.deal .pr{color:var(--mute);font-size:14px}
@@ -218,7 +219,7 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
     <div class="log" id="log" aria-live="polite"></div>
     <div class="chips" id="chips"></div>
     <form class="in" id="f"><textarea id="t" rows="1" aria-label="메시지 입력" placeholder="메시지를 입력하세요"></textarea><button class="send" id="send" type="submit">전송</button></form>
-  </section></div>
+  </section><aside class="front" id="testbox"></aside></div>
   <section class="card" data-view="admin" hidden>
     <div class="hd"><div class="av">🐾</div><div><b>꼬순내 마켓 관리자</b><small>오늘도 꼬순내 나는 하루예요 · 대시보드, 질문 분석, 보리 설정, FAQ, 데이터 관리</small></div></div>
     <div class="adbody">
@@ -960,6 +961,18 @@ function renderAdmin(){
 /* ---------- 쇼핑 화면 ---------- */
 let fcat='전체';
 const EMO={사료:'🥣',간식:'🦴',영양제:'💊'},CCLS={사료:'a',간식:'b',영양제:'c'};
+function renderTest(){ // 오른쪽 배송 테스트용 정보: 가상 주문 목록(누르면 주문번호가 입력됨)
+  const f=$('testbox');f.textContent='';
+  const box=mk('div','hot');box.append(mk('h2',null,'배송 테스트용 정보'),mk('p','note','가상 데이터예요. 주문번호를 누르고, 보리가 물으면 뒤 4자리를 입력해 보세요.'));
+  const list=Object.entries(D.orders).sort((a,b)=>a[0].localeCompare(b[0])).slice(0,10);
+  if(!list.length)box.append(mk('span','note','불러오는 중이에요…'));
+  list.forEach(([id,o])=>{
+    const t=mk('button','row');t.type='button';const info=mk('div','ri');
+    info.append(mk('div','tn',id+' · '+o.customer),mk('div','tp',(o.status||'-')+' · 뒤 4자리 '+o.phone4));
+    t.append(info);t.onclick=()=>send(id);box.append(t);
+  });
+  f.append(box);
+}
 function renderFront(){ // 왼쪽 오늘의 핫딜: 재고 있는 상품 중 할인율 상위 5개, 작은 목록형
   const f=$('front');f.textContent='';
   const box=mk('div','hot');box.append(mk('h2',null,'오늘의 핫딜'));
@@ -1000,7 +1013,7 @@ function onData(c){
   }else if(location.hash==='#admin'&&isAdmin)renderTabs();
 }
 async function init(){
-  document.body.classList.add('cust');renderFront();
+  document.body.classList.add('cust');renderFront();renderTest();
   window.addEventListener('hashchange',route);
   $('lnkOut').onclick=e=>{e.preventDefault();window.__kkmAuth.logout().then(()=>{location.hash='#chat';location.reload()})};
   try{const u=await window.claude?.use?.('user');isAdmin=u?await u.canEdit():false;uid=u?await u.id():null}catch(e){}
@@ -1015,7 +1028,7 @@ async function init(){
   if(isAdmin)db.collection('chats').onSnapshot(sn=>{CH=[];sn.docs.forEach((d,i)=>{((d.data()||{}).entries||[]).forEach(e=>CH.push({...e,cust:i+1,cid:d.id}))});CH.sort((a,b)=>b.ts-a.ts);loaded.chats=true;onData('chats')},()=>{loaded.chats=true;onData('chats')});
   db.doc('settings/agent').onSnapshot(d=>{agent=d.exists?d.data():{};loaded.settings=true;$('hdName').textContent=AG().name;if(atHome&&log.children.length===1)home();onData('settings')},()=>{});
   Object.keys(COLS).forEach(c=>{
-    db.collection(c).onSnapshot(s=>{D[c]={};s.docs.forEach(d=>D[c][d.id]=d.data());loaded[c]=true;if(atHome&&log.children.length===1)setChips(HOME_CHIPS);if(c==='products'||c==='stock')renderFront();onData(c)},e=>{loaded[c]=true;onData(c)});
+    db.collection(c).onSnapshot(s=>{D[c]={};s.docs.forEach(d=>D[c][d.id]=d.data());loaded[c]=true;if(atHome&&log.children.length===1)setChips(HOME_CHIPS);if(c==='products'||c==='stock')renderFront();if(c==='orders'||c==='deliveries')renderTest();onData(c)},e=>{loaded[c]=true;onData(c)});
   });
 }
 init();
