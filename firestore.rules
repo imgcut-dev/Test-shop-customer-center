@@ -1,15 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    // 소유자 (항상 관리자). public/index.html의 OWNERS와 같이 바꿔야 함
+    function isOwner() {
+      return signedIn() && request.auth.token.email in ['imgcut@gmail.com'];
+    }
+    // 관리자 = 소유자 또는 admins 컬렉션에 이메일이 등록된 사람
     function isAdmin() {
-      return request.auth != null
-        && request.auth.token.email_verified == true
-        && request.auth.token.email in ['imgcut@gmail.com'];
+      return isOwner() || (signedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email)));
     }
     // 상품·재고·주문·배송·FAQ·설정: 누구나 읽기(고객 챗봇이 사용), 수정은 관리자만
     match /{col}/{id} {
       allow read: if col in ['products','stock','orders','deliveries','faq','settings'];
       allow write: if isAdmin() && col in ['products','stock','orders','deliveries','faq','settings'];
+    }
+    // 관리자 목록: 본인 문서 확인 가능, 전체 보기·추가는 관리자, 본인 삭제는 불가
+    match /admins/{email} {
+      allow get: if isAdmin() || (signedIn() && request.auth.token.email == email);
+      allow list, create, update: if isAdmin();
+      allow delete: if isAdmin() && request.auth.token.email != email;
     }
     // 상담 기록: 고객은 자기 문서만 읽고 쓰기, 전체 목록은 관리자만
     match /chats/{uid} {

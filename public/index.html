@@ -219,12 +219,16 @@ body.cust .hd .av{font-size:20px}
   let uid=null;try{uid=localStorage.getItem(UIDK)}catch(e){}
   if(!uid){uid='u_'+Math.random().toString(36).slice(2,12);try{localStorage.setItem(UIDK,uid)}catch(e){}}
   /* 관리자: 아래 이메일의 구글 계정으로 로그인한 사람만 (firestore.rules의 이메일도 같이 바꿔야 함) */
-  const ADMINS=['imgcut@gmail.com'];
+  const OWNERS=['imgcut@gmail.com']; /* 소유자: 항상 관리자, 화면에서 삭제 불가 (firestore.rules의 이메일도 같이 바꿔야 함) */
   const auth=firebase.auth();
   const authReady=new Promise(r=>{const off=auth.onAuthStateChanged(u=>{off();r(u)})});
-  const isAdm=u=>!!u&&u.emailVerified&&ADMINS.includes((u.email||'').toLowerCase());
-  const user={isOwner:async()=>isAdm(await authReady),canEdit:async()=>isAdm(await authReady),id:async()=>((await authReady)||{}).uid||uid,can:async()=>isAdm(await authReady)};
-  window.__kkmAuth={email:()=>auth.currentUser&&auth.currentUser.email||'',signedIn:()=>!!auth.currentUser,
+  const adminP=authReady.then(async u=>{
+    if(!u||!u.emailVerified)return false;
+    const e=(u.email||'').toLowerCase();if(OWNERS.includes(e))return true;
+    try{return (await fs.doc('admins/'+e).get()).exists}catch(x){return false}
+  });
+  const user={isOwner:()=>adminP,canEdit:()=>adminP,id:async()=>((await authReady)||{}).uid||uid,can:()=>adminP};
+  window.__kkmAuth={owners:OWNERS,email:()=>auth.currentUser&&auth.currentUser.email||'',signedIn:()=>!!auth.currentUser,
     login:()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()),logout:()=>auth.signOut(),ready:authReady};
   /* sample: 브라우저에 저장된 키가 있으면 Anthropic 직접 호출, 없으면 로컬 서버(/api/ask) */
   const MODELS={quick:'claude-haiku-5-5',default:'claude-sonnet-5-5',complex:'claude-opus-5-5'};
@@ -268,7 +272,7 @@ const COLS={
  faq:{label:'FAQ·지식',cols:[['category','분류'],['q','질문','area'],['a','답변','area'],['keywords','키워드(쉼표)'],['enabled','사용(Y/N)']]}
 };
 const KEYLABEL={products:'상품ID',stock:'상품ID',orders:'주문번호',deliveries:'주문번호',faq:'FAQ ID'};
-const D={products:{},stock:{},orders:{},deliveries:{},faq:{}};const loaded={};let agent={};
+const D={products:{},stock:{},orders:{},deliveries:{},faq:{}};const loaded={};let agent={};let AD={};
 let db=null,sample=null,isAdmin=false,uid=null,CH=[];
 const $=id=>document.getElementById(id);
 const mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
@@ -447,12 +451,13 @@ const NAV=[
  {g:'대시보드',top:true,items:[['dash','대시보드']]},
  {g:'상담 관리',items:[['chats','상담 내역'],['qa','질문 분석']]},
  {g:'챗봇 설정',items:[['ai','AI·에이전트'],['conn','AI 연결'],['faq','FAQ·지식']]},
- {g:'상품·주문 데이터',items:[['products','상품'],['stock','재고'],['orders','주문'],['deliveries','배송']]}
+ {g:'상품·주문 데이터',items:[['products','상품'],['stock','재고'],['orders','주문'],['deliveries','배송']]},
+ {g:'관리자 관리',items:[['admins','관리자 계정']]}
 ];
 const collapsed={};
 function renderTabs(){
   const box=$('tabs');box.textContent='';
-  const cnt=k=>k==='chats'?CH.length:COLS[k]?Object.keys(D[k]).length:null;
+  const cnt=k=>k==='chats'?CH.length:k==='admins'?Object.keys(AD).length+window.__kkmAuth.owners.length:COLS[k]?Object.keys(D[k]).length:null;
   const item=([k,l],cls)=>{const n=cnt(k);const b=mk('button',cls,l+(n!=null?' ('+n+')':''));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',k===tab);b.onclick=()=>{tab=k;renderAdmin()};return b};
   NAV.forEach(g=>{
     if(g.top){box.append(item(g.items[0],'g-top'));return}
@@ -730,10 +735,40 @@ function renderQA(box){
   s3.append(mk('p','note','AI가 답한 질문은 "FAQ로 등록"으로 답변을 그대로 가져올 수 있어요. 등록하면 사용(N) 상태로 들어가니 내용을 확인한 뒤 사용(Y)으로 바꾸면, 다음부터 AI 없이 바로 답합니다.'));
   box.append(s3);
 }
+function renderAdmins(box){
+  const A=window.__kkmAuth,me=(A.email()||'').toLowerCase();
+  const s1=sec('관리자 계정');
+  s1.append(mk('p','note','여기에 등록된 구글 계정으로 로그인하면 이 관리자 화면을 쓸 수 있어요. 소유자는 항상 관리자이며 삭제할 수 없어요. 새 관리자는 다음 로그인부터 적용돼요.'));
+  const tb=mk('table'),hr=mk('tr');['이메일','구분','추가한 사람','추가일',''].forEach(x=>hr.append(mk('th',null,x)));
+  const th=mk('thead');th.append(hr);tb.append(th);const body=mk('tbody');
+  const row=(email,kind,by,at,delFn)=>{
+    const tr=mk('tr');tr.append(mk('td',null,email+(email===me?' (나)':'')),mk('td',null,kind),mk('td',null,by||'-'),mk('td',null,at?fmtT(at):'-'));
+    const td=mk('td');
+    if(delFn){const d=mk('button','del','삭제');d.type='button';let armed=false,tm;
+      d.onclick=async()=>{if(!armed){armed=true;d.textContent='한 번 더 누르면 삭제';tm=setTimeout(()=>{armed=false;d.textContent='삭제'},3000);return}
+        clearTimeout(tm);try{status('삭제 중…');await delFn();status('저장됨')}catch(e){status('삭제 실패: '+(e.message||e.code))}};td.append(d)}
+    else td.append(mk('span','note',email===me?'본인은 삭제 불가':'소유자'));
+    tr.append(td);body.append(tr)};
+  A.owners.forEach(o=>row(o,'소유자','-',0,null));
+  Object.keys(AD).sort().forEach(e=>row(e,'관리자',AD[e].addedBy,AD[e].addedAt,e===me?null:()=>db.collection('admins').doc(e).delete()));
+  tb.append(body);s1.append(tb);box.append(s1);
+  const s2=sec('관리자 추가');
+  const inp=mk('input');inp.type='email';inp.placeholder='name@gmail.com';inp.autocomplete='off';inp.setAttribute('aria-label','추가할 관리자 구글 이메일');inp.style.cssText='width:min(320px,100%);margin-right:8px';
+  const add=mk('button','btn2','추가');add.type='button';
+  add.onclick=async()=>{
+    const e=inp.value.trim().toLowerCase();
+    if(!/^[^\s@\/]+@[^\s@\/]+\.[^\s@\/]+$/.test(e)){status('이메일 형식이 올바르지 않아요');return}
+    if(A.owners.includes(e)||AD[e]){status('이미 관리자예요');return}
+    try{status('저장 중…');await db.collection('admins').doc(e).set({addedBy:me,addedAt:Date.now()});inp.value='';status('저장됨')}catch(x){status('저장 실패: '+(x.message||x.code))}
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();add.click()}};
+  s2.append(inp,add,mk('p','note','구글 계정(이메일 인증된 계정)만 가능해요. 잘못 추가해도 이 화면에서 바로 삭제할 수 있어요.'));
+  box.append(s2);
+}
 function renderAdmin(){
   renderTabs();
   const box=$('adm');box.textContent='';
-  const SPECIAL={dash:renderDash,chats:renderChats,qa:renderQA,ai:renderAI,conn:renderConn};
+  const SPECIAL={dash:renderDash,chats:renderChats,qa:renderQA,ai:renderAI,conn:renderConn,admins:renderAdmins};
   if(SPECIAL[tab]){SPECIAL[tab](box);renderBar();return}
   const cfg=COLS[tab];
   if(tab==='faq')box.append(mk('p','note','사용(Y)으로 둔 항목은 챗봇이 즉시 답변하고, AI에게도 근거 정보로 전달됩니다. 키워드는 쉼표로 구분하며, 고객 질문에 키워드가 하나라도 들어 있으면 이 답변이 바로 나갑니다. 처음 들어 있는 정책(배송비, 환불 기간 등)은 예시이니 실제 운영 정책으로 고쳐 주세요.'));
@@ -822,6 +857,7 @@ async function init(){
   route();
   if(!db){$('sub').textContent='데이터에 연결되지 않았어요';add('bot','상품 데이터에 연결되지 않아 일부 안내가 제한됩니다.');return}
   if(uid)try{const m=await db.doc('chats/'+uid).get();if(m.exists)myLog=(m.data().entries||[]).slice(-150)}catch(e){}
+  if(isAdmin)db.collection('admins').onSnapshot(s=>{AD={};s.docs.forEach(d=>AD[d.id]=d.data());loaded.admins=true;onData('admins')},()=>{});
   if(isAdmin)db.collection('chats').onSnapshot(sn=>{CH=[];sn.docs.forEach((d,i)=>{((d.data()||{}).entries||[]).forEach(e=>CH.push({...e,cust:i+1}))});CH.sort((a,b)=>b.ts-a.ts);loaded.chats=true;onData('chats')},()=>{loaded.chats=true;onData('chats')});
   db.doc('settings/agent').onSnapshot(d=>{agent=d.exists?d.data():{};loaded.settings=true;$('hdName').textContent=AG().name;if(atHome&&log.children.length===1)home();onData('settings')},()=>{});
   Object.keys(COLS).forEach(c=>{
