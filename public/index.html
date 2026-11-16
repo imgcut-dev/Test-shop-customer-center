@@ -125,7 +125,7 @@ pre.prompt{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);bord
 td textarea{font:inherit;font-size:14px;width:100%;min-width:260px;box-sizing:border-box;background:var(--bg);color:var(--fg);border:1px solid transparent;border-radius:6px;padding:6px 8px;resize:vertical}
 td textarea:hover{border-color:var(--line)}
 /* 꼬순내 마켓 (고객 화면) */
-.wrap.shop{max-width:720px}
+.wrap.shop{max-width:1040px}
 .stage{flex:1;min-height:0;display:flex;gap:16px}
 .front{flex:1;min-width:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 .chatcard{flex:0 0 400px;border-radius:20px}
@@ -195,7 +195,15 @@ textarea{border:0;background:var(--bg);border-radius:16px;padding:12px 16px;font
 .rate button{border:0;background:var(--bg);border-radius:10px}
 .tabs button{border:0;background:var(--bg);border-radius:10px;font-weight:600}
 .tabs button[aria-selected="true"]{background:var(--accent)}
-.stage .front{display:none}
+.front{flex:none;width:300px;overflow-y:auto}
+.hot{background:var(--panel);border-radius:24px;padding:16px 12px}
+.hot h2{font-size:17px;font-weight:700;margin:0 8px 8px}
+.row{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;color:var(--fg);text-align:left;padding:10px 8px;border-radius:14px;cursor:pointer}
+.row:hover{background:var(--bg)}
+.ic2{width:36px;height:36px;flex:none;border-radius:10px;background:var(--bg);display:grid;place-items:center;font-size:18px}
+.ri{flex:1;min-width:0}.ri .tn{min-height:0;display:block;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ri .tp{font-size:14px;color:var(--mute)}
+.row .tag{flex:none}
+@media (max-width:899px){.front{display:none}}
 .deal{align-self:flex-start;max-width:92%;display:flex;flex-direction:column;gap:6px;background:var(--bg);border-radius:18px;padding:14px 16px;align-items:flex-start}
 .deal b{font-size:17px;font-weight:700}.deal .pr{color:var(--mute);font-size:14px}
 </style>
@@ -939,27 +947,19 @@ function renderAdmin(){
 /* ---------- 쇼핑 화면 ---------- */
 let fcat='전체';
 const EMO={사료:'🥣',간식:'🦴',영양제:'💊'},CCLS={사료:'a',간식:'b',영양제:'c'};
-function renderFront(){
+function renderFront(){ // 왼쪽 오늘의 핫딜: 재고 있는 상품 중 할인율 상위 5개, 작은 목록형
   const f=$('front');f.textContent='';
-  const hero=mk('div','hero'),tx=mk('div');
-  tx.append(mk('h2',null,'오늘의 특가 🐾'),mk('p',null,'우리 댕댕이 사료·간식, 오늘만 이 가격!'),mk('p','big','궁금한 건 오른쪽 보리에게 물어보세요. 상품을 누르면 재고를 바로 알려 드려요.'));
-  hero.append(tx,mk('div','hero-ic','🐕'));
-  const cats=mk('div','cats');
-  ['전체',...new Set(Object.values(D.products).map(p=>p.category))].forEach(c=>{const b=mk('button',c===fcat?'on':'',c);b.type='button';b.onclick=()=>{fcat=c;renderFront()};cats.append(b)});
-  const g=mk('div','pgrid2');
-  const list=Object.entries(D.products).filter(([,p])=>fcat==='전체'||p.category===fcat);
-  if(!list.length)g.append(mk('span','note','상품을 불러오는 중이에요…'));
-  list.forEach(([id,p])=>{
-    const q=Number((D.stock[id]||{}).qty),t=mk('button','tile');t.type='button';
-    const ic=mk('div','ic c-'+(CCLS[p.category]||'a'),EMO[p.category]||'🐾');
-    if(D.stock[id]){if(q<=0)ic.append(mk('span','bd no','품절'));else if(q<=5)ic.append(mk('span','bd low','소량 남음'))}
-    const rate=p.price?Math.round((1-p.salePrice/p.price)*100):0;
-    const pr=mk('div','tp');pr.append(mk('b',null,won(p.salePrice)));if(rate>0)pr.append(mk('span','rt',rate+'%'));
-    t.append(ic,mk('div','tn',shortName(p)),pr);
+  const box=mk('div','hot');box.append(mk('h2',null,'오늘의 핫딜'));
+  const list=Object.entries(D.products).filter(([id])=>Number((D.stock[id]||{}).qty)>0).map(([id,p])=>[id,p,p.price?Math.round((1-p.salePrice/p.price)*100):0]).sort((a,b)=>b[2]-a[2]).slice(0,5);
+  if(!list.length)box.append(mk('span','note','상품을 불러오는 중이에요…'));
+  list.forEach(([id,p,rate])=>{
+    const t=mk('button','row');t.type='button';
+    const info=mk('div','ri');info.append(mk('div','tn',shortName(p)),mk('div','tp',won(p.salePrice)));
+    t.append(mk('span','ic2',EMO[p.category]||'🐾'),info,mk('span','tag',rate+'%'));
     t.onclick=()=>send(`${shortName(p)} 재고 있나요?`);
-    g.append(t);
+    box.append(t);
   });
-  f.append(hero,cats,g);
+  f.append(box);
 }
 /* ---------- routing & data ---------- */
 function route(){
